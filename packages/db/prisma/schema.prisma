@@ -13,6 +13,8 @@ model User {
   name        String? 
   number      String  @unique
   password    String
+  OnRamTransaction OnRampTransaction[]
+  Balance Balance[]
 }
 
 model Merchant {
@@ -22,7 +24,33 @@ model Merchant {
   auth_type   AuthType   
 }
 
+// to list the transaction history with the status of it.
+model OnRampTransaction{
+  id Int @id @default(autoincrement())
+  status onrampStatus
+  token String @unique
+  provider String
+  amount Int
+  startTime DateTime
+  userid Int
+  user User @relation(fields: [userid], references: [id])
+}
+
+model Balance {
+  id Int @id @default(autoincrement())
+  userid Int @unique
+  amount Int
+  locked Int
+  user User @relation(fields: [userid], references: [id])
+}
+
 enum AuthType {
   Google
   Github
+}
+
+enum onrampStatus {
+  Succes
+  Failure
+  Processing
 }

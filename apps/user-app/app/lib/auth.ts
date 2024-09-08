@@ -11,6 +11,7 @@ export const authOptions = {
             password: { label: "Password", type: "password", required: true }
           },
           // TODO: User credentials type from next-aut
+          // Anytime we click on submit the authorize function is called
           async authorize(credentials: any) {
             // Do zod validation, OTP validation here
             const hashedPassword = await bcrypt.hash(credentials.password, 10);
