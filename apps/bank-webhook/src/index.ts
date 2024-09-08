@@ -47,8 +47,9 @@ app.post("/webhook", async (req, res)=>{
 
   } catch(e) {
     return res.status(411).json ({
-      message: "Erro while processing webhook"
+      message: "Error while processing webhook"
     })
   }
-
 })
+
+app.listen(3003);
