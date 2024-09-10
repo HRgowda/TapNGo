@@ -13,7 +13,7 @@ model User {
   name        String? 
   number      String  @unique
   password    String
-  OnRamTransaction OnRampTransaction[]
+  OnRampTransaction OnRampTransaction[]
   Balance Balance[]
 }
 
@@ -50,7 +50,7 @@ enum AuthType {
 }
 
 enum onrampStatus {
-  Succes
+  Success
   Failure
   Processing
 }
