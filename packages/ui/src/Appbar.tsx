@@ -9,13 +9,9 @@ interface AppbarProps {
     onSignout: any
 }
 
-export const Appbar = ({
-    user,
-    onSignin,
-    onSignout
-}: AppbarProps) => {
+export const Appbar = ({user, onSignin, onSignout}: AppbarProps) => {
     return <div className="flex justify-between border-b px-4 border-slate-300">
-        <div className="text-2xl flex flex-col justify-center">
+        <div className="text-3xl flex flex-col justify-center">
             TapNGo
         </div>
         <div className="flex flex-col justify-center pt-2">
