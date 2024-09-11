@@ -9,7 +9,7 @@ export default async function () {
     <div className="text-4xl font-semibold pt-10 mb-4 text-[#6a51a6] cursor-pointer" onClick={() => {
       route.push('p2ptransfer');
     }}>
-      P2PTransfer
+      P2P Transfer
     </div>
     <SendCard />
   </div>
