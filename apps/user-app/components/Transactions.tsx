@@ -1,6 +1,7 @@
 "use client"
 
 import { Card } from "@repo/ui/card"
+import { getServerSession } from "next-auth";
 
 interface onRampProps{
   time: Date;
