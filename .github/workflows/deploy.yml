@@ -29,4 +29,4 @@ jobs:
         tags: hemanthrgowda18/tapngo:latest  # Replace with your Docker Hub username and repository
 
     - name: Verify Pushed Image
-      run: hemanthrgowda18/tapngo:latest  # Replace with your Docker Hub username and repository
+      run: docker pull hemanthrgowda18/tapngo:latest  # Replace with your Docker Hub username and repository
