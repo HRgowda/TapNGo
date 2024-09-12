@@ -19,12 +19,6 @@ async function bankTransactions(){
 
   async function p2pTransactions(){
     const session = await getServerSession(authOptions);
-    const sender = session.user.id;
-    const reciever = await prisma.p2pTransfer.findUnique({
-      where:{
-        toUserId: 
-      } 
-    });
     const p2ptxn = await prisma.p2pTransfer.findMany({
       where:{
         fromUserId: session.user.fromUserId
