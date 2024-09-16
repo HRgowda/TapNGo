@@ -26,20 +26,23 @@ async function bankTransactions(){
     });
     return p2ptxn.map(tx => ({
       timestamp: tx.timestamp,
-      amount: tx.amount
+      amount: tx.amount,
+      fromUserId: tx.fromUserId
     }))
     }
 
 export default async function () {
   const bank = await bankTransactions();
   const p2p = await p2pTransactions();
+  const session = await getServerSession(authOptions)
+  const id  = session.user.id
 
   return <div className="w-screen">
     <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
     Recent Transactions
     </div>
     <div className="">
-      <Transactions banktxn={bank} p2ptxn={p2p}></Transactions>
+      <Transactions banktxn={bank} p2ptxn={p2p} currentId={id}></Transactions>
     </div>
   </div>
 
