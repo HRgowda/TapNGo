@@ -13,7 +13,7 @@ export function ProfileCard() {
         {/* Avatar */}
         <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white">
           <img
-            src="/Images/avatar.jpg"
+            src="/Images/avatar.png"
             alt="Profile Image"
             className="w-full h-full object-cover"
           />
