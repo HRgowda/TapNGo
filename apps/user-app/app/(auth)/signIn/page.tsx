@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { signIn } from 'next-auth/react';
-import SignIn from '../../../components/SignIn';
+import SignIn from "@components/auth/SignIn";
 
 const SignInPage = () => {
 

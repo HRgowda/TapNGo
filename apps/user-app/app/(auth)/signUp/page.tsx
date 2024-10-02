@@ -1,5 +1,5 @@
 
-import { SignUp } from "../../../components/SignUp"
+import { SignUp } from "@components/auth/SignUp"
 
 export default async function() {
   return <div>
