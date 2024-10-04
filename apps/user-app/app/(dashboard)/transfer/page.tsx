@@ -1,56 +1,90 @@
-import prisma from "@repo/db/client";
-import { AddMoney } from "../../../components/AddMoneyCrad";
-import { BalanceCard } from "../../../components/BalanceCard";
-import { OnRampTransactions } from "../../../components/OnRampTransaction";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
+import { SendCard } from "@components/transfer/SendCard"
+import { LatestActions } from "@components/transfer/LatestActions"
+import db from "@repo/db/client"
+import { authOptions } from "app/lib/auth"
+import { getServerSession } from "next-auth"
+import { TapngoUsers } from "@components/transfer/TapNGousers"
+import { Session } from "inspector"
 
-async function getBalance() {
-    const session = await getServerSession(authOptions);
-    const balance = await prisma.balance.findFirst({
-        where: {
-            userid: Number(session?.user?.id)
-        }
-    });
-    return {
-        amount: balance?.amount || 0,
-        locked: balance?.locked || 0
+const session = await getServerSession(authOptions);
+
+export async function userData() {
+
+  // return all users except the current user.
+  const loggedUser = session?.user.id
+  
+  const users = await db.user.findMany({
+    orderBy:{
+      id: "desc"
+    },
+    select: {
+      firstName: true,
+      id: true
+    },
+    where:{
+      id:{
+        not: Number(loggedUser)
+      }
     }
+  });
+
+  const data = users.map(user => ({
+    id: user.id,
+    firstName: user.firstName,
+  })) 
+
+  return data;
 }
 
-async function getOnRampTransactions() {
-    const session = await getServerSession(authOptions);
-    const txns = await prisma.onRampTransaction.findMany({
-        where: {
-            userid: Number(session?.user?.id)
+export async function transactions () {
+
+  const transactions = await db.p2pTransfer.findMany({
+    where:{
+      fromUserId: Number(session?.user.id)
+    },
+    select:{
+      toUser:{
+        select:{
+          firstName: true,
+          lastName: true,
+          id: true
         }
-    });
-    return txns.map(t => ({
-        time: t.startTime,
-        amount: t.amount,
-        status: t.status,
-        provider: t.provider
-    }))
+      }
+    }
+  });
+
+  // This check is to filter if any toUser data is undefined so that it encounters runtime error since the value would be undefined so the filter() function would remove all the values of undefined in the userTransactions array. 
+
+  const userTransactions = transactions
+    .map(t => t.toUser)
+    .filter(user => user !== undefined) as { firstName: string, id: number }[];
+
+  return userTransactions
 }
 
-export default async function() {
-    const balance = await getBalance();
-    const transactions = await getOnRampTransactions();
+export default async function Home() {
 
-    return <div className="w-screen">
-        <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
-            Transfer
+  const balance = await db.balance.findFirst({
+    where: {
+      userid: Number(session?.user.id)
+    }
+  });
+
+  const data = await userData();
+
+  const transactionedNames = await transactions();
+  
+  return (
+    <div className="w-full space-y-2">
+
+      <SendCard balance={Number(balance?.amount)} userDetails={data} />
+
+      {/* Recent Interactions */}
+      <div>
+        <LatestActions users={transactionedNames} allUsers={data}></LatestActions>
+        <div>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-            <div>
-                <AddMoney />
-            </div>
-            <div>
-                <BalanceCard amount={balance.amount} locked={balance.locked} />
-                <div className="pt-4">
-                    <OnRampTransactions transactions={transactions} />
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  );
 }
