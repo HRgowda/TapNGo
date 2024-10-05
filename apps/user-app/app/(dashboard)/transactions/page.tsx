@@ -1,4 +1,4 @@
-import { Transactions } from "../../../components/Transactions"
+import { Transactions } from "@components/Transactions"
 import prisma from "@repo/db/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../lib/auth"
@@ -17,32 +17,54 @@ async function bankTransactions(){
     }))
   }
 
-  async function p2pTransactions(){
-    const session = await getServerSession(authOptions);
+  async function p2pTransactions(loggedUserId: number) {
+    
     const p2ptxn = await prisma.p2pTransfer.findMany({
-      where:{
-        fromUserId: session.user.fromUserId
-      }      
+      orderBy:{
+        id: "desc"
+      },
+
+      where: {
+        OR: [
+          { fromUserId: Number(loggedUserId) }, // Logged-in user as sender
+          { toUserId: Number(loggedUserId) }    // Logged-in user as receiver
+        ]
+      },
+      include: {
+        fromUser: true,
+        toUser: true
+      }
     });
+  
     return p2ptxn.map(tx => ({
-      timestamp: tx.timestamp,
+      id: tx.id,
+      date: tx.timestamp,
       amount: tx.amount,
-      fromUserId: tx.fromUserId
-    }))
-    }
+      from: {
+        id: (tx.fromUser.id),
+        name: tx.fromUser.firstName
+      },
+      to: {
+        id: (tx.toUser.id),
+        name: tx.toUser.firstName
+      }
+    }));
+  }  
 
 export default async function () {
-  const bank = await bankTransactions();
-  const p2p = await p2pTransactions();
   const session = await getServerSession(authOptions)
+
+  const loggedUser  = session?.user.id
+
+  const bank = await bankTransactions();
+
+  const p2p = await p2pTransactions(loggedUser);
+
   const id  = session.user.id
 
-  return <div className="w-screen">
-    <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
-    Recent Transactions
-    </div>
+  return <div className="">
     <div className="">
-      <Transactions banktxn={bank} p2ptxn={p2p} currentId={id}></Transactions>
+      <Transactions transactionData={p2p} currentUserId={loggedUser}></Transactions>
     </div>
   </div>
 
