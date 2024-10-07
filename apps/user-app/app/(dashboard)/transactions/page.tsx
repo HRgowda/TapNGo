@@ -56,11 +56,11 @@ export default async function () {
 
   const loggedUser  = session?.user.id
 
-  const bank = await bankTransactions();
+  // const bank = await bankTransactions();
 
   const p2p = await p2pTransactions(loggedUser);
 
-  const id  = session.user.id
+  // const id  = session.user.id
 
   return <div className="">
     <div className="">
