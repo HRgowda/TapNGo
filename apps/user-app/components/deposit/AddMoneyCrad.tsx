@@ -2,7 +2,6 @@
 
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { Center } from "@repo/ui/center";
 import { Select } from "@repo/ui/select";
 import { useState } from "react";
 import { TextInput } from "@repo/ui/textinput";
@@ -23,10 +22,6 @@ export const AddMoney = () => {
     const [redirectUrl, setRedirectUrl] = useState(SUPPORTED_BANKS[0]?.redirectUrl);
     const [amount, setAmount] = useState(0);
     const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
-
-  // function createOnRampTransaction(amount: string, provider: string | undefined) {
-  //   throw new Error("Function not implemented.");
-  // }
 
     return <Card title="Add Money to your Wallet">
     <div className="w-full">
