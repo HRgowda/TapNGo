@@ -14,7 +14,11 @@
   "dependencies": {
     "@repo/db": "*",
     "@types/express": "^4.17.21",
+    "cors": "^2.8.5",
     "esbuild": "^0.20.2",
     "express": "^4.19.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17"
   }
 }

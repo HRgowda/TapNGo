@@ -11,6 +11,9 @@ async function getOnRampTransactions(userid: number) {
     const txns = await prisma.onRampTransaction.findMany({
         where: {
             userid
+        },
+        orderBy:{
+            id: "desc"
         }
     });
     return txns.map(t => ({

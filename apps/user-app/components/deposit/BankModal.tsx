@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { OnRampTransaction } from "app/lib/actions/createOnRamptxn";
+import axios from "axios";
 import { Button } from "@repo/ui/button";
 
 interface BankModalProps {
@@ -10,9 +10,16 @@ interface BankModalProps {
   onClose: () => void;
   provider: string;
   amount: number;
+  transactionToken: string | null;
 }
 
-export function BankModal({ isOpen, onClose, provider, amount }: BankModalProps) {
+export function BankModal({
+  isOpen,
+  onClose,
+  provider,
+  amount,
+  transactionToken,
+}: BankModalProps) {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,33 +38,35 @@ export function BankModal({ isOpen, onClose, provider, amount }: BankModalProps)
     }
   };
 
-  const handleSend = async () => {
+  const handleDeposit = async () => {
     if (!pin || isNaN(Number(pin))) {
       setAlertMessage("Please enter a valid numeric PIN.");
-      setTimeout(() => {
-        setAlertMessage(null);
-      }, 3000);
+      setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
 
     setIsLoading(true);
-    
-    const response = await OnRampTransaction(amount, provider, pin);
 
-    if (response.status === 200) {
-      setAlertMessage(response.body.message);
-      setTimeout(() => {
-        onClose();
-      }, 3000);
-    } else {
-      setAlertMessage(response.body.message || "Transaction failed. Please try again.");
-      setTimeout(() => {
-        setAlertMessage(null);
-        setPin("");
-      }, 2000);
+    try {
+      const response = await axios.post("http://localhost:3003/bank_server", {
+        token: transactionToken,
+        user_identifier: 1, // Replace with actual user ID
+        amount,
+        pin,
+      });
+
+      if (response.status === 200) {
+        setAlertMessage(response.data.message);
+        setTimeout(() => onClose(), 3000);
+      } else {
+        setAlertMessage(response.data.message || "Transaction failed.");
+      }
+    } catch (error) {
+      console.error("Webhook error:", error);
+      setAlertMessage("Failed to complete the transaction.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -108,7 +117,7 @@ export function BankModal({ isOpen, onClose, provider, amount }: BankModalProps)
               />
             </div>
 
-            <Button onClick={handleSend}>
+            <Button onClick={handleDeposit}>
               {isLoading ? "Processing..." : "Deposit"}
             </Button>
           </div>

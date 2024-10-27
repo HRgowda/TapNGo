@@ -1,8 +1,13 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "NodeNext",            // Set module system to NodeNext for ES module support
+    "moduleResolution": "NodeNext",   // Ensure the module resolution strategy is compatible
+    "target": "ESNext",               // Target the latest version of ECMAScript
+    "esModuleInterop": true,          // Enable interoperability between CommonJS and ES modules
+    "strict": true                    // Enable all strict type-checking options
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],           // Include all TypeScript files in the src folder
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist folders
 }

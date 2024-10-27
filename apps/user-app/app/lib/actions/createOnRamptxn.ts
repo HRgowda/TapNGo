@@ -8,10 +8,11 @@ interface OnRampTransactionResponse {
   status: number;
   body: {
     message: string;
+    token?: string;
   };
 }
 
-export async function OnRampTransaction(inputAmount: number, provider: string, pin: string): Promise<OnRampTransactionResponse> {
+export async function OnRampTransaction(inputAmount: number, provider: string): Promise<OnRampTransactionResponse> {
   const session = await getServerSession(authOptions);
   const userid = session?.user?.id;
 
@@ -24,44 +25,24 @@ export async function OnRampTransaction(inputAmount: number, provider: string, p
     };
   }
 
-  if (inputAmount <= 0 || inputAmount > 15000) {
+  if (inputAmount <= 0) {
     return {
       status: 400,
       body: {
         message: "Please enter a valid inputAmount.",
       },
     };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: Number(userid),
-    },
-    select: {
-      pin: true,
-    },
-  });
-
-  if (!user) {
+  } else if (inputAmount > 15000) {
     return {
-      status: 404,
+      status: 400,
       body: {
-        message: "User not found.",
-      },
-    };
-  }
-
-  if (user.pin !== pin) {
-    return {
-      status: 403,
-      body: {
-        message: "Invalid PIN, Please enter a valid pin.",
+        message: "Amount should be less than Rs 15,000",
       },
     };
   }
 
   try {
-    const token = generateToken(); // Use a better token generation method
+    const token = generateToken(); // Generate the token
 
     await prisma.onRampTransaction.create({
       data: {
@@ -74,23 +55,11 @@ export async function OnRampTransaction(inputAmount: number, provider: string, p
       },
     });
 
-    await prisma.$transaction(async (tx) => {
-      await tx.balance.update({
-        where:{
-          id: Number(session.user.id)
-        },
-        data:{
-          amount: {
-            increment: inputAmount
-          }
-        }
-      })
-    })
-
     return {
       status: 200,
       body: {
-        message: "On ramp transaction added",
+        message: "Bank transaction initiated, Directing to new page please wait",
+        token: token, // Include the token in the response
       },
     };
   } catch (error) {
