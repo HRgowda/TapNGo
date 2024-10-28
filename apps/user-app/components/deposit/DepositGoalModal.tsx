@@ -2,7 +2,7 @@
 
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { handleDepositGoal } from "../../app/lib/actions/depositGoals";
+import { handleDepositGoal } from "app/lib/actions/depositGoals";
 
 interface uiProps {
   isOpen: boolean;
@@ -71,7 +71,6 @@ export function GoalsModal({ uiProps, userId, title, subTitle1, subTitle2, goalA
         action: goalAction
       });
 
-      // Check the response for success or error
       if (response.status === 200) {
         const successMessages = {
           create: "Savings goal created successfully",
@@ -162,7 +161,7 @@ export function GoalsModal({ uiProps, userId, title, subTitle1, subTitle2, goalA
             className="bg-gradient-to-r from-blue-400 to-blue-700 text-white py-2 px-6 rounded-lg shadow-md hover:from-blue-700 hover:to-blue-400 transition-transform transform hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             onClick={handleSave}
           >
-            {goalAction === "add" ? "Add money" : "Withdraw money"}
+            {goalAction === "add" ? "Add money" : goalAction === "create" ? "Create Goal" :  "Withdraw money"}
           </button>
           <button
             className="bg-gray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-transform transform hover:scale-105 focus:ring-2 focus:ring-gray-500 focus:outline-none"

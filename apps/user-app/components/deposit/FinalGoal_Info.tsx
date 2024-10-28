@@ -35,17 +35,17 @@ export function FinalGoalUi({
   const progress = Math.min((currentSavings / goalAmount) * 100, 100).toFixed(2);
 
   return (
-    <div className="bg-gray-900 h-screen rounded-lg flex flex-col p-4">
+    <div className="bg-gray-900 h-screen w-full rounded-lg flex flex-col p-2">
       {/* Left Section */}
       <div className="text-white font-bold text-2xl p-4">
-        <h1 className="font-extrabold text-4xl text-start bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 mb-2">
+        <h1 className="font-extrabold text-3xl text-start bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500">
           {userName}'s Vision Vault
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 p-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 p-4 gap-6">
 
-        <div className="bg-gray-800 p-6 rounded-lg transition-transform transform hover:scale-105">
+        <div className="bg-gray-800 p-6 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:shadow-white/50 hover:-translate-y-2">
           <h1 className="text-white text-center border-b border-gray-200 p-4 text-2xl font-bold tracking-wide mb-4">
             Current Goals: {goalType}
           </h1>
@@ -78,7 +78,7 @@ export function FinalGoalUi({
         </div>
 
         {/* Right Section: Chart */}
-        <div className="bg-gray-800 p-6 rounded-lg transition-transform transform hover:scale-105">
+        <div className="bg-gray-800 p-6 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:shadow-white/50 hover:-translate-y-2">
 
           <div className="text-white font-bold text-2xl">
 
@@ -98,7 +98,7 @@ export function FinalGoalUi({
         </div>
       </div>
 
-      <h1 className="p-12 text-white font-bold text-xl text-center">Financial goals are achieved not by chance, but by choice - every contribution today shapes your success tomorrow!</h1>
+      <h1 className="p-4 mt-6 text-white font-bold text-xl text-center">Financial goals are achieved not by chance, but by choice - every contribution today shapes your success tomorrow!</h1>
 
       {/* Modal */}
       {isModalOpen && (

@@ -16,7 +16,7 @@ async function getOnRampTransactions(userid: number) {
             id: "desc"
         }
     });
-    return txns.map(t => ({
+    return txns.filter(t => t.status ==="Success").map(t => ({
         time: t.startTime,
         amount: t.amount,
         status: t.status,
@@ -64,9 +64,9 @@ export default async function Page() {
     <div>
         <div className="p-2 flex justify-between grid grid-cols-2 gap-4">
             <div>
-                <AddMoney />
+                <AddMoney userid={userId} />
             </div>
-            <div className="bg-gray-900 h-full rounded-xl">
+            <div className="h-full rounded-lg">
                 <OnRampTransactions transactions={transactions} />
             </div>
         </div>

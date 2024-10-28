@@ -57,7 +57,7 @@ export function GoalsInitialUi({userid}: {userid: number}) {
       {/* Conditionally render GoalsModal */}
       {isModalOpen && (
         
-        <GoalsModal uiProps={{isOpen: isModalOpen, onClose: () => setModalOpen(false)}} userId={userid} isAddFund={false} title="Set Your Deposit Goal" subTitle1="Select a Goal Type" subTitle2="Goal Amount" goalAction="create"></GoalsModal>
+        <GoalsModal uiProps={{isOpen: isModalOpen, onClose: () => setModalOpen(false)}} userId={userid} title="Set Your Deposit Goal" subTitle1="Select a Goal Type" subTitle2="Goal Amount" goalAction="create"></GoalsModal>
       )}
 
     </div>

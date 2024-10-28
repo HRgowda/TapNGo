@@ -4,6 +4,7 @@ import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { Button } from "@repo/ui/button";
+import { alertMessage as AlertMessage } from "@components/AlertMessage";
 
 interface BankModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface BankModalProps {
   provider: string;
   amount: number;
   transactionToken: string | null;
+  id: number;
 }
 
 export function BankModal({
@@ -19,8 +21,9 @@ export function BankModal({
   provider,
   amount,
   transactionToken,
+  id,
 }: BankModalProps) {
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<{ message: string; status: "success" | "failure" } | null>(null);
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +43,7 @@ export function BankModal({
 
   const handleDeposit = async () => {
     if (!pin || isNaN(Number(pin))) {
-      setAlertMessage("Please enter a valid numeric PIN.");
+      setAlertMessage({ message: "Please enter a valid numeric PIN.", status: "failure" });
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
@@ -48,22 +51,40 @@ export function BankModal({
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3003/bank_server", {
+      const response = await axios.post("http://localhost:3003/complete_onramp", {
         token: transactionToken,
-        user_identifier: 1, // Replace with actual user ID
+        user_identifier: id,
         amount,
         pin,
       });
 
       if (response.status === 200) {
-        setAlertMessage(response.data.message);
-        setTimeout(() => onClose(), 3000);
+        setAlertMessage({ message: response.data.message, status: "success" });
+        setTimeout(() => {
+          setAlertMessage(null),
+          setPin(""),
+          onClose()}, 2000);
       } else {
-        setAlertMessage(response.data.message || "Transaction failed.");
+        setAlertMessage({ message: response.data.message, status: "failure" });
+        setTimeout(() =>{
+          setAlertMessage(null);
+          setPin("");
+        })       
       }
+
     } catch (error) {
       console.error("Webhook error:", error);
-      setAlertMessage("Failed to complete the transaction.");
+      
+      // Handling specific error response from the bank_server
+      if (axios.isAxiosError(error) && error.response) {
+        setAlertMessage({ message: error.response.data.message, status: "failure" });
+        setTimeout(()=>{
+          setAlertMessage(null);
+          setPin("")
+        }, 3000)
+      } else {
+        setAlertMessage({ message: "Failed to complete the transaction.", status: "failure" });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -78,6 +99,13 @@ export function BankModal({
         className="flex flex-col bg-gray-900 rounded-lg border-2 border-blue-500 w-[30rem] relative p-6"
         onClick={handleContentClick}
       >
+        {/* Alert message inside the modal */}
+        {alertMessage && (
+          <div className="mb-4">
+            <AlertMessage description={alertMessage.message} status={alertMessage.status} />
+          </div>
+        )}
+
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Deposit money to your wallet</h2>
           <button onClick={onClose}>
@@ -90,10 +118,13 @@ export function BankModal({
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white">
               <img
                 src={
-                  provider === "HDFC Bank" ? "/Images/hdfc.png"
-                    : provider === "Axis Bank" ? "/Images/axis.png"
-                    : provider === "SBI Bank" ? "/Images/sbi.png"
-                    : "/Images/default.png" // Fallback image if provider is not recognized
+                  provider === "HDFC Bank"
+                    ? "/Images/hdfc.png"
+                    : provider === "Axis Bank"
+                    ? "/Images/axis.png"
+                    : provider === "SBI Bank"
+                    ? "/Images/sbi.png"
+                    : "/Images/default.png"
                 }
                 alt="Bank logo"
                 className="w-full h-full object-cover"
@@ -109,7 +140,7 @@ export function BankModal({
               </label>
               <input
                 id="pin"
-                type="password" // Use password type for PIN
+                type="password"
                 className="w-full text-white text-md font-semibold border-b bg-gray-800 p-2 rounded-lg"
                 placeholder="Enter PIN"
                 value={pin}
@@ -122,12 +153,6 @@ export function BankModal({
             </Button>
           </div>
         </div>
-
-        {alertMessage && (
-          <div className="mt-4 bg-red-500 text-white p-4 rounded-lg text-center">
-            {alertMessage}
-          </div>
-        )}
       </div>
     </div>
   );
