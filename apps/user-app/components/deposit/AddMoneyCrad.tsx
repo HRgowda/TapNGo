@@ -47,11 +47,15 @@ export const AddMoney = ({ userid }: Props) => {
       });
 
       if (response.status === 200) {
-        setAlertMessage({ message: response.data.message, status: "success" });
-        setTransactionToken(response.data.token ?? null);
-        setModalOpen(true);
+        setAlertMessage({ 
+          message: response.data.message, 
+          status: "success" 
+      });
 
-        setTimeout(() => setAlertMessage(null), 1000);
+      setTransactionToken(response.data.token ?? null);
+      setModalOpen(true);
+
+      setTimeout(() => setAlertMessage(null), 2000);
       }
     } catch (error) {
       console.error("Error initiating deposit:");

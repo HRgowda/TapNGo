@@ -61,19 +61,23 @@ app.post("/create_onramp", async (req, res) => {
 
 // complete the processing onRamp
 app.post("/complete_onramp", async (req, res) => {
+  console.log("Request Body:", req.body); // Log the request body
   const { token, user_identifier, amount, pin } = req.body;
 
-  if (!token || !user_identifier || !amount || !pin) {
+  // Check for required fields
+  if (!token || !user_identifier || !amount) {
     return res.status(400).json({
       message: "Invalid request payload. Please provide all required fields.",
     });
   }
 
   try {
+    // Find the corresponding transaction
     const transaction = await db.onRampTransaction.findFirst({
       where: { 
         token, 
-        status: "Processing" },
+        status: "Processing" 
+      },
     });
 
     if (!transaction) {
@@ -85,7 +89,7 @@ app.post("/complete_onramp", async (req, res) => {
     const user = await db.user.findUnique({
       where: { 
         id: Number(user_identifier)
-       },
+      },
       select: { 
         pin: true 
       },
@@ -97,20 +101,25 @@ app.post("/complete_onramp", async (req, res) => {
       });
     }
 
-    if (user.pin !== pin) {
-      return res.status(400).json({
-         message: "Invalid PIN, Please enter a valid pin."
-      });
+    // If a PIN is provided, validate it
+    if (pin !== undefined) {
+      if(user.pin !== pin){
+        return res.status(400).json({
+          message: "Invalid PIN. Please enter a valid PIN."
+        });
+      }
+    } else {
+      console.log("Otp verfication succeeded")
     }
 
+    // Proceed with the deposit
     await db.$transaction([
       db.balance.upsert({
         where: { 
           userid: Number(user_identifier)
-         },
+        },
         update: {
-           amount: { increment: Number(amount)
-           } 
+          amount: { increment: Number(amount) } 
         },
         create: {
           userid: Number(user_identifier),
@@ -123,13 +132,13 @@ app.post("/complete_onramp", async (req, res) => {
         where: { token },
         data: { 
           status: "Success"
-       },
+        },
       }),
     ]);
 
     return res.status(200).json({
-       message: "Deposited successfully." 
-      });
+      message: "Deposited successfully." 
+    });
   } catch (error) {
     console.error("Webhook processing error:", error);
     return res.status(500).json({

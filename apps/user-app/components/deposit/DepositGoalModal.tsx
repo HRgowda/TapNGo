@@ -73,9 +73,9 @@ export function GoalsModal({ uiProps, userId, title, subTitle1, subTitle2, goalA
 
       if (response.status === 200) {
         const successMessages = {
-          create: "Savings goal created successfully",
-          add: "Funds added successfully",
-          withdraw: "Funds withdrawn successfully"
+          create: response.body.message,
+          add: response.body.message,
+          withdraw: response.body.message
         }
         setAlertMessage(successMessages[goalAction]);
         setAlertBackground("bg-blue-500");
@@ -163,6 +163,7 @@ export function GoalsModal({ uiProps, userId, title, subTitle1, subTitle2, goalA
           >
             {goalAction === "add" ? "Add money" : goalAction === "create" ? "Create Goal" :  "Withdraw money"}
           </button>
+
           <button
             className="bg-gray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-transform transform hover:scale-105 focus:ring-2 focus:ring-gray-500 focus:outline-none"
             onClick={uiProps.onClose}

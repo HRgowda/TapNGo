@@ -14,7 +14,7 @@ export const OnRampTransactions = ({
         return (
           <div className="rounded-xl transition-shadow hover:shadow-lg hover:shadow-white/80">
             <Card title="Recent Transactions">
-                <div className="h-60 text-center text-lg pb-8 pt-8">
+                <div className="h-60 text-center text-white text-lg pb-8 pt-8">
                     No Recent deposits, consider making some deposits.
                 </div>
             </Card>

@@ -2,14 +2,15 @@
   "name": "bank-webhook",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm",
     "start": "node dist/index.js",
     "dev": "npm run build && npm run start"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hemanth",
   "license": "ISC",
   "dependencies": {
     "@repo/db": "*",

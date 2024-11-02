@@ -51,23 +51,23 @@ export function FinalGoalUi({
           </h1>
 
           <div className="flex justify-between items-center text-white font-semibold p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 hover:border-2 hover:border-white mb-4">
-            <h2 className="text-lg">Target Amount</h2>
-            <p className="text-xl font-bold">Rs {goalAmount}</p>
+            <div className="text-lg">Target Amount</div>
+            <div className="text-xl font-bold">Rs {goalAmount}</div>
           </div>
 
           <div className="flex justify-between items-center text-white font-semibold p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 hover:border-2 hover:border-white mb-4">
-            <h2 className="text-lg">Current Savings</h2>
-            <p className="text-xl font-bold">Rs {currentSavings}</p>
+            <div className="text-lg">Current Savings</div>
+            <div className="text-xl font-bold">Rs {currentSavings}</div>
           </div>
 
           <div className="flex justify-between items-center text-white font-semibold p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 hover:border-2 hover:border-white mb-4">
-            <h2 className="text-lg">Deadline</h2>
-            <p className="text-xl font-bold">{deadline.toLocaleDateString()}</p>
+            <div className="text-lg">Deadline</div>
+            <div className="text-xl font-bold">{deadline.toLocaleDateString()}</div>
           </div>
 
           <div className="flex justify-between items-center text-white font-semibold p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 hover:border-2 hover:border-white mb-4">
-            <h2 className="text-lg">Progress</h2>
-            <p className="text-xl font-bold">{progress} %</p>
+            <div className="text-lg">Progress</div>
+            <div className="text-xl font-bold">{progress} %</div>
           </div>
 
           {/* Buttons */}
@@ -98,7 +98,7 @@ export function FinalGoalUi({
         </div>
       </div>
 
-      <h1 className="p-4 mt-6 text-white font-bold text-xl text-center">Financial goals are achieved not by chance, but by choice - every contribution today shapes your success tomorrow!</h1>
+      <div className="p-4 mt-6 text-white font-bold text-xl text-center">Financial goals are achieved not by chance, but by choice - every contribution today shapes your success tomorrow!</div>
 
       {/* Modal */}
       {isModalOpen && (
