@@ -1,27 +1,85 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { verifyOtp } from "app/lib/actions/otpService";
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import db from "@repo/db/client";
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if(req.method !== "POST"){
-    res.status(405).json({
-      message: "Method not allowed"
-    })
-  }
+export async function POST(req: NextRequest) {
+  const { email, otp } = await req.json();
 
-  const {email, otp} = req.body;
+  try {
+    const record = await db.otp.findFirst({
+      where: {
+         email, 
+         used: false 
+      },
+      orderBy: { 
+        expiresAt: "desc" 
+      },
+    });
 
-  try{
-    const isValidOtp = await verifyOtp(email, otp);
-
-    if(isValidOtp){
-      res.status(200).json({
-        message: "Otp verfied successfully"
-      })
+    if (!record) {
+      return NextResponse.json({
+         success: false,
+        message: "No OTP found or already used."
+       }, 
+       {
+         status: 400 
+      });
     }
-  } catch(error){
-    console.log(error);
-    res.status(400).json({
-      message: error
+
+    if (new Date() > record.expiresAt) {
+      await db.otp.delete({ 
+        where: { id: record.id } 
+      });
+      return NextResponse.json({
+        success: false,
+        message: "OTP has expired, please try again." 
+      }, 
+      { 
+        status: 400 
+      });
+    }
+
+    const isMatch = await bcrypt.compare(otp, record.otpHashed);
+    if (!isMatch) {
+      return NextResponse.json({ 
+        success: false, 
+        message: "Invalid OTP, Please enter the valid OTP." 
+      }, 
+      { 
+        status: 400 
+      });
+    }
+
+    await db.otp.update({ 
+      where: { 
+        id: record.id 
+      }, 
+      data: { 
+        used: true 
+      } 
+    });
+
+    await db.otp.delete({
+      where:{
+        id: record.id
+      }
     })
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "OTP verified successfully!" 
+    }, 
+    {
+       status: 200 
+    });
+  } catch (error) {
+    console.error("Error while verifying OTP:", error);
+    return NextResponse.json({ 
+      success: false, 
+      message: "Failed to verify OTP, please try again later." 
+    }, 
+    { 
+      status: 500 
+    });
   }
 }
