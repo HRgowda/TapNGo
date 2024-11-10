@@ -15,7 +15,6 @@ import {
   ScriptableContext,
   Color
 } from 'chart.js';
-import { Transactions } from '@components/Transactions'; // Ensure this component exists
 
 // Register required components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title);
@@ -34,7 +33,7 @@ export function P2PChart({ data }: { data: TransactionData[] }) {
     datasets: [
       {
         label: 'Total Amount Transferred (₹)',
-        data: data.map((item) => item.amount / 100),
+        data: data.map((item) => item.amount),
         backgroundColor: (context: ScriptableContext<'bar'>): Color => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
@@ -117,7 +116,7 @@ export function P2PChart({ data }: { data: TransactionData[] }) {
   };
 
   return (
-    <div className="flex bg-gray-900 p-6 rounded-lg"> 
+    <div className="flex bg-gray-900 p-6 rounded-lg hover:shadow-lg hover:shadow-white/50"> 
       <Bar data={chartData} options={options} className="flex-1" /> 
     </div>
   );

@@ -50,7 +50,7 @@ export default function LandingPage() {
   return (
     <div className="bg-[#121212] min-h-screen text-white">
       {/* Header */}
-      <header className="py-6 bg-gray-800 border-b border-gray-800 sticky top-0 z-10 shadow-lg">
+      <header className="py-6 bg-gray-900 border-b sticky top-0 z-10 shadow-lg">
         <nav className="container mx-auto flex justify-center items-center px-4 lg:px-8">
           <div className="text-2xl font-bold text-white tracking-wide cursor-pointer">tapNgo</div>
         </nav>
@@ -108,14 +108,7 @@ export default function LandingPage() {
               <Slider {...settings} className="w-full">
                 {images.map((image, index) => (
                   <div key={index} className="p-4">
-                    <Image 
-                      src={image.src} 
-                      alt={image.alt} 
-                      layout="responsive" 
-                      width={1200} 
-                      height={800} 
-                      className="rounded-lg shadow-lg transition-transform transform hover:scale-105" 
-                    />
+                    <Image src={image.src} alt={image.alt} width={1200} height={800} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1200px"                className="rounded-lg shadow-lg transition-transform transform hover:scale-105" />
                     <p className="text-lg lg:text-xl mt-4 lg:mt-6 text-white font-medium">{image.caption}</p>
                   </div>
                 ))}

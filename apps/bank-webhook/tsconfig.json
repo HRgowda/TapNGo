@@ -2,6 +2,7 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "module": "NodeNext",            // Set module system to NodeNext for ES module support
     "moduleResolution": "NodeNext",   // Ensure the module resolution strategy is compatible
     "target": "ESNext",               // Target the latest version of ECMAScript

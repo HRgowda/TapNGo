@@ -26,7 +26,7 @@ interface OnRampTransaction {
   provider: string;
 }
 
-export function OnRampChart({ data }: { data: OnRampTransaction[] }) {
+export function OnRampChart({ data = [] }: { data: OnRampTransaction[] }) {
   const chartData: ChartData<'line'> = {
     labels: data.map((item) => item.provider),
     datasets: [
@@ -36,9 +36,7 @@ export function OnRampChart({ data }: { data: OnRampTransaction[] }) {
         backgroundColor: (context: ScriptableContext<'line'>): Color => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
-          if (!chartArea) {
-            return 'rgba(75, 192, 192, 0.2)'; // Default color
-          }
+          if (!chartArea) return 'rgba(75, 192, 192, 0.2)'; // Default color
           const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
           gradient.addColorStop(0, 'rgba(75, 192, 192, 0.8)');
           gradient.addColorStop(1, 'rgba(75, 192, 192, 0.2)');
@@ -46,7 +44,7 @@ export function OnRampChart({ data }: { data: OnRampTransaction[] }) {
         },
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 2,
-        tension: 0.3,
+        tension: 0.2,
         fill: true,
         pointRadius: 5,
       },
@@ -72,7 +70,7 @@ export function OnRampChart({ data }: { data: OnRampTransaction[] }) {
       },
       title: {
         display: true,
-        text: 'On-Ramp Transactions Overview',
+        text: 'Bank deposits Overview',
         color: 'lightgray',
         font: { size: 24, family: 'Arial, sans-serif' },
         align: 'start',
@@ -116,7 +114,7 @@ export function OnRampChart({ data }: { data: OnRampTransaction[] }) {
   };
 
   return (
-    <div className="flex bg-gray-900 p-6 rounded-lg">
+    <div className="flex bg-gray-900 p-6 rounded-lg hover:shadow-lg hover:shadow-white/50">
       <Line data={chartData} options={options} className="flex-1" />
     </div>
   );

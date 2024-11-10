@@ -1,25 +1,20 @@
-import { Button } from "./button";
-import { useRouter } from "next/navigation"
+"use client"
+import { useRouter } from "next/navigation";
 
-interface AppbarProps {
-    user?: {
-        name?: string | null;
-    },
-    // TODO: can u figure out what the type should be here?
-    onSignin: any,
-    onSignout: any
-}
-
-export const Appbar = ({user, onSignin, onSignout}: AppbarProps) => {
+export function Appbar() {
     const route = useRouter();
-    return <div className="flex justify-between border-b px-4 border-slate-300">
-        <div className="text-4xl font-serif flex flex-col justify-center cursor-pointer" onClick={()=> {
-            route.push('/dashboard')
-        }}>
-            TapNGo
-        </div>
-        <div className="flex flex-col justify-center pt-2">
-            <Button onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
-        </div>
+
+    return (
+        <div className="fixed top-0 left-0 right-0 z-10 flex items-center justify-center bg-gray-900 border-b border-slate-300 h-16 p-4">
+    <div 
+        className="text-3xl font-semibold font-mono text-white cursor-pointer transition-transform transform hover:underline"
+        onClick={() => {
+            route.push('/landing');
+        }}
+    >
+        tapNgo
     </div>
+</div>
+
+    );
 }

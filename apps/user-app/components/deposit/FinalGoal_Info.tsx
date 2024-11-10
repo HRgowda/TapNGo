@@ -4,6 +4,7 @@ import { Button } from "@repo/ui/button";
 import { GoalDepositChart } from "./GoalDepositChart";
 import { GoalsModal } from "./DepositGoalModal";
 import { useState } from "react";
+import { Card } from "@repo/ui/card";
 
 interface FinalGoalProps {
   userid: number;
@@ -35,15 +36,9 @@ export function FinalGoalUi({
   const progress = Math.min((currentSavings / goalAmount) * 100, 100).toFixed(2);
 
   return (
-    <div className="bg-gray-900 h-screen w-full rounded-lg flex flex-col p-2">
-      {/* Left Section */}
-      <div className="text-white font-bold text-2xl p-4">
-        <h1 className="font-extrabold text-3xl text-start bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500">
-          {userName}'s Vision Vault
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 p-4 gap-6">
+    <div id="vision-vault" className="h-full w-full rounded-lg flex flex-col mt-4">
+      <Card title={`${userName}'s Vision Vault`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 p-4 gap-6">
 
         <div className="bg-gray-800 p-6 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:shadow-white/50 hover:-translate-y-2">
           <h1 className="text-white text-center border-b border-gray-200 p-4 text-2xl font-bold tracking-wide mb-4">
@@ -99,6 +94,8 @@ export function FinalGoalUi({
       </div>
 
       <div className="p-4 mt-6 text-white font-bold text-xl text-center">Financial goals are achieved not by chance, but by choice - every contribution today shapes your success tomorrow!</div>
+
+      </Card>
 
       {/* Modal */}
       {isModalOpen && (

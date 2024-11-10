@@ -46,3 +46,60 @@
   transform: translateY(-5px); /* Move content up slightly */
 }
 
+.newtons-cradle {
+  --uib-color: #474554; /* Custom color */
+}
+
+.newtons-cradle__dot::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 25%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+}
+
+.newtons-cradle__dot:first-child {
+  animation: swing 1.2s linear infinite;
+}
+
+.newtons-cradle__dot:last-child {
+  animation: swing2 1.2s linear infinite;
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  25% {
+    transform: rotate(70deg);
+    animation-timing-function: ease-in;
+  }
+  50% {
+    transform: rotate(0deg);
+    animation-timing-function: linear;
+  }
+}
+
+@keyframes swing2 {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: linear;
+  }
+  50% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  75% {
+    transform: rotate(-70deg);
+    animation-timing-function: ease-in;
+  }
+}
+
+.dot {
+  width: 100%;
+  height: 100%;
+  background-color: var(--uib-color);
+  border-radius: 50%;
+}

@@ -4,17 +4,21 @@ import React from "react";
 
 export const SidebarItem = ({ href, title, icon }: { href: string; title: string; icon: React.ReactNode }) => {
     const router = useRouter();
-    const pathname = usePathname()
-    const selected = pathname === href
+    const pathname = usePathname();
+    const selected = pathname === href;
 
-    return <div className={`flex ${selected ? "text-[#6a51a6]" : "text-slate-500"} cursor-pointer  p-2 pl-8`} onClick={() => {
-        router.push(href);
-    }}>
-        <div className="pr-2">
-            {icon}
+    return (
+        <div 
+            className={`flex items-center justify-start text-white cursor-pointer border-b rounded-full m-2 p-2 sm:text-base md:text-lg lg:pl-8 transition-colors duration-100 ease-in-out 
+                ${selected ? "bg-slate-700" : "hover:bg-slate-600"}`}
+            onClick={() => router.push(href)}
+        >
+            <div className="pr-2">
+                {icon}
+            </div>
+            <div className="font-bold">
+                {title}
+            </div>
         </div>
-        <div className={`font-bold ${selected ? "text-[#6a51a6]" : "text-slate-500"}`}>
-            {title}
-        </div>
-    </div>
-}
+    );
+};

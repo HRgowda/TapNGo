@@ -13,7 +13,7 @@ export function ProfileCard() {
         {/* Avatar */}
         <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white">
           <img
-            src="/Images/avatar.png"
+            src="/Images/avatar2.png"
             alt="Profile Image"
             className="w-full h-full object-cover"
           />
@@ -27,7 +27,7 @@ export function ProfileCard() {
           <button
             className="text-white text-sm py-2 px-4 rounded-xl transition duration-300 ease-in-out hover:bg-blue-600 hover:shadow-xl"
             onClick={() => {
-              signOut({ callbackUrl: "/signin" });
+              signOut({ callbackUrl: "/signIn" });
             }}
           >
             Logout

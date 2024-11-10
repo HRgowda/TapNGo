@@ -35,7 +35,7 @@ export default function SignIn(){
     <section className="flex justify-center items-center h-screen">
       <div className="w-full bg-white rounded-lg shadow-2xl md:mt-0 sm:max-w-md ">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl text-center font-bold md:text-2xl">Login to your account</h1>
+          <div className="text-xl text-center font-bold md:text-2xl">Login to your account</div>
           <form className="space-y-4 md:space-y-6 font-semibold text-lg" onSubmit={submit}> 
             
               <div>
@@ -64,12 +64,12 @@ export default function SignIn(){
               Next
             </button>
 
-            <p className="text-sm font-light text-center text-gray-500">
+            <div className="text-sm font-light text-center text-gray-500">
               New User ?{" "}
               <a className="font-medium text-blue-600 hover:underline gap-4" href="/signUp">
                 Sign Up here
               </a>
-            </p>
+            </div>
           </form>
         </div>
       </div>

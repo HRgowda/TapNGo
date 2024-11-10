@@ -1,6 +1,6 @@
 "use client";
 
-import animationData from '../public/Animation - 1727201525747 (1).json'; // Adjust the path if necessary
+import animationData from "../public/animation.json"
 import Lottie from 'lottie-react';
 
 const LottieAnimation = () => {

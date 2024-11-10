@@ -1,113 +1,139 @@
 import React, { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "@repo/ui/button";
-import { P2PTransfer } from "../../app/lib/actions/p2ptxn"
+import { P2PTransfer } from "app/lib/server_actions/p2pTxnDatabase";
+import { alertMessage as AlertMessage } from "@components/AlertMessage";
 
 interface SendModalProps {
   isOpen: boolean;
   onClose: () => void;
   recieverId: number;
   recieverName: string;
-  children: React.ReactNode; // This is the selected user passed from the main modal
+  children: React.ReactNode;
 }
 
 export function SendModal({ isOpen, onClose, recieverId, recieverName, children }: SendModalProps) {
   const [amount, setAmount] = useState<number | undefined>(undefined);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<{
+    message: string;
+    status: "success" | "failure";
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
-    // Prevent modal closing when clicking inside the modal
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 
-  async function handleSendClick(){
-    if (amount === undefined || amount <= 0){
-      setAlertMessage("Please enter a valid amount!")
+  async function handleSendClick() {
+    if (amount === undefined || amount <= 0) {
+      setAlertMessage({ message: "Please enter a valid amount!", status: "failure" });
+
+      setTimeout(() => {
+        setAlertMessage(null);
+        setAmount(0);
+      }, 2000);
+
       return;
     }
 
     setLoading(true);
 
-    try{
+    try {
       const response = await P2PTransfer(recieverId, Number(amount));
-
-      if(response?.message === "User not found"){
-        setAlertMessage("User not found");
-      } 
-      else if(response?.message === "Error while sending"){
-        setAlertMessage("Transfer failed. Please try again");
+      if (response?.message === "User not found") {
+        setAlertMessage({ message: "User not found", status: "failure" });
+        setTimeout(() => {
+          setAlertMessage(null);
+          onClose();
+        }, 2000);
+      } else if (response?.message === "Error while sending") {
+        setAlertMessage({ message: "Transfer failed. Please try again", status: "failure" });
+        setTimeout(() => {
+          setAlertMessage(null);
+          onClose();
+        });
+      } else {
+        setAlertMessage({ message: "Transfer successful!", status: "success" });
+        setTimeout(() => {
+          setAlertMessage(null);
+          onClose();
+        }, 1000);
       }
-       else {
-        setAlertMessage("Transfer successful!")
-      }
-    } catch(e){
-      setAlertMessage("Transfer failed. Insufficient funds or an error occured")
+    } catch (error) {
+      setAlertMessage({
+        message: "Transfer failed. Insufficient funds or an error occurred",
+        status: "failure",
+      });
+      setTimeout(() => {
+        setAlertMessage(null);
+        onClose();
+      }, 2000);
     }
 
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
     <div
-      className="text-white fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
       onClick={onClose}
     >
       <div
-        className="flex flex-col bg-gray-900 rounded-lg border-2 border-blue-500 w-[30rem] relative p-6"
+        className="relative p-4 bg-gray-900 rounded-lg border-2 border-blue-500 w-auto max-w-[30rem] md:w-[30rem] sm:w-[24rem] sm:px-6 sm:py-8"
         onClick={handleContentClick}
       >
         {/* Header with "Send" and close button on the same line */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Send to {recieverName}</h2>
+          <div className="text-lg sm:text-xl font-semibold">Send to {recieverName}</div>
           <button onClick={onClose}>
-            <XMarkIcon className="h-6 w-6 text-white"></XMarkIcon>
+            <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </button>
         </div>
 
-        {/* Main content: Left (Avatar & Receiver) and Right (Amount & Send button) */}
-        <div className="mt-8 flex justify-around items-center">
+        {/* Main content: Avatar, Amount input, and Send button */}
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-around items-center space-y-6 sm:space-y-0">
           {/* Left: Avatar and Receiver */}
           <div className="flex flex-col items-center space-y-2">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white">
               <img
                 src="/Images/avatar.png"
                 alt="Profile avatar"
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-white font-medium text-center">{recieverName}</span>
+            <span className="text-white text-sm sm:text-base font-medium text-center">
+              {recieverName}
+            </span>
           </div>
 
           {/* Right: Input box with label and Send button */}
-          <div className="flex flex-col items-center space-y-4">
+          <div className="flex flex-col items-center space-y-4 w-full sm:w-auto px-4 sm:px-0">
             {/* Input label and box */}
-            <div className="flex flex-col">
-              <label htmlFor="amount" className="text-white mb-2">
+            <div className="flex flex-col w-full sm:w-auto">
+              <label htmlFor="amount" className="text-white text-sm sm:text-base mb-1 sm:mb-2">
                 Amount
               </label>
-
-              <input type="number" 
-                className="w-full text-white text-md font-semibold border-b bg-gray-800 p-2 rounded-lg" 
+              <input
+                type="number"
+                className="w-full sm:w-auto text-white text-md font-semibold border-b bg-gray-800 p-2 rounded-lg"
                 placeholder="100"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))} />
-
+                onChange={(e) => setAmount(Number(e.target.value))}
+              />
             </div>
 
-            {/* Send button */}
-            <Button
-              onClick={handleSendClick}
-            >
-              {loading ? "Sending..." : "Send"}
-            </Button>
+            {/* Send button wrapped in a div for responsiveness */}
+            <div className="w-full flex justify-center mt-4">
+              <Button onClick={handleSendClick}>
+                {loading ? "Sending..." : "Send"}
+              </Button>
+            </div>
           </div>
         </div>
 
+        {/* Alert Message */}
         {alertMessage && (
-          <div className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg">
-            {alertMessage}
-          </div>
+          <AlertMessage description={alertMessage.message} status={alertMessage.status} />
         )}
       </div>
     </div>

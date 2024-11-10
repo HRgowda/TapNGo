@@ -1,4 +1,5 @@
 // Import required components
+"use client"
 import React from 'react';
 import {
     Chart as ChartJS,

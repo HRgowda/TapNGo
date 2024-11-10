@@ -31,10 +31,7 @@ export const AddMoney = ({ userid }: Props) => {
 
   const handleSubmit = async () => {
     if (amount <= 0) {
-      setAlertMessage({
-        message: "Please enter a valid amount.",
-        status: "failure",
-      });
+      setAlertMessage({ message: "Please enter a valid amount.", status: "failure" });
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
@@ -47,35 +44,22 @@ export const AddMoney = ({ userid }: Props) => {
       });
 
       if (response.status === 200) {
-        setAlertMessage({ 
-          message: response.data.message, 
-          status: "success" 
-      });
-
-      setTransactionToken(response.data.token ?? null);
-      setModalOpen(true);
-
-      setTimeout(() => setAlertMessage(null), 2000);
+        setAlertMessage({ message: response.data.message, status: "success" });
+        setModalOpen(true);
+        setTimeout(() => setAlertMessage(null), 2000);
       }
     } catch (error) {
       console.error("Error initiating deposit:");
-      setAlertMessage({
-        message: "Failed to initiate deposit. Try again later.",
-        status: "failure",
-      });
+      setAlertMessage({ message: "Failed to initiate deposit. Try again later.", status: "failure" });
       setTimeout(() => setAlertMessage(null), 3000);
     }
   };
 
   return (
-    <div className="rounded-xl transition-shadow duration-300 hover:shadow-lg hover:shadow-white/80">
+    <div className="rounded-xl transition-shadow duration-300 hover:shadow-lg hover:shadow-white/20">
       <Card title="Add Money to your Wallet">
         <div className="w-full">
-          <TextInput
-            label="Amount"
-            placeholder="Enter amount"
-            onChange={(value) => setAmount(Number(value))}
-          />
+          <TextInput label="Amount" placeholder="Enter amount" onChange={(value) => setAmount(Number(value))} />
           <div className="py-4 text-left text-blue-400">Bank</div>
           <Select
             onSelect={(value) =>
@@ -110,3 +94,4 @@ export const AddMoney = ({ userid }: Props) => {
     </div>
   );
 };
+

@@ -13,18 +13,18 @@ export async function POST(req: Request) {
   try {
     const hashedPassword = await hash(password, 10);
 
-    const newUser = await db.user.create({
+    await db.user.create({
       data: {
         firstName,
         lastName,
         email,
         number,
         password: hashedPassword,
-        pin: parseInt(pin),
+        pin: (pin),
       },
     });
 
-    return NextResponse.json({ user: newUser }, { status: 200 });
+    return NextResponse.json({ message: "Account createad successfully" }, { status: 200 });
   } catch (error) {
     console.error('Error creating user:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

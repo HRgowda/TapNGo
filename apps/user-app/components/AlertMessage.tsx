@@ -17,7 +17,7 @@ export function alertMessage({ description, status }: AlertMessageProps) {
         ${alertColors}
       `}
     >
-      <p className="text-sm font-medium">{description}</p>
+      <div className="text-sm font-medium">{description}</div>
     </div>
   );
 }

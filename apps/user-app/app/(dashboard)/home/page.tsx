@@ -1,31 +1,24 @@
-// app/page.tsx
-import { DashboardCard } from '@components/HomeCard';
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
-import db from "@repo/db/client";
-
-async function getBalance(userId: number) {
-  const balanceData = await db.balance.findFirst({ where: { userid: userId } });
-  return { amount: balanceData?.amount || 0, locked: balanceData?.locked || 0 };
-}
+import { Dashboard } from '@components/home/DashboardCard';
+import { FeatureButtons } from '@components/home/NavigationButtons';
+import { getUserWithCard, getUserBalance, getLoggedUser } from "app/lib/server_actions/userDatabase";
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
+  const userId = await getLoggedUser();
+  if (!userId) return <div className="text-white font-bold text-4xl flex items-center">Please log in to view the dashboard.</div>;
 
-  if (!userId) return <div>Please log in to view the dashboard.</div>;
+  const userCard = await getUserWithCard(userId);
+  const balance = await getUserBalance(Number(userId));
 
-  const userData = await db.user.findFirst({
-    where: { id: parseInt(userId) },
-    include: { Card: true },
-  });
-
-  if (!userData) return <div>User data not found.</div>;
-
-  const fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
-  const balance = await getBalance(Number(userId));
+  if (!userCard) return <div className="text-white font-bold text-4xl flex items-center">User data not found.</div>;
 
   return (
-    <DashboardCard fullName={fullName} card={userData.Card[0]} balance={balance} />
+    <div className="p-3">
+      <div className="mb-2">
+        <Dashboard fullName={userCard.fullName} card={userCard.card} balance={balance} />
+      </div>
+      <div>
+        <FeatureButtons />
+      </div>
+    </div>
   );
 }
