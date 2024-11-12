@@ -109,8 +109,8 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       }
     }
 
-    await db.$transaction(async (db) => {
-      await db.depositGoals.update({
+    await db.$transaction([
+      db.depositGoals.update({
         where: {
           userid_goalType: { 
             userid: userId, 
@@ -121,9 +121,9 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
             increment: goalAmount 
           },
         },
-      });
-  
-      await db.balance.update({
+      }),
+      
+      db.balance.update({
         where: {
           userid: userId
         },
@@ -132,9 +132,11 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
             decrement: goalAmount
           }
         }
-      })
-      console.log("Success")
-    })
+      }),
+    ]);
+    
+    console.log("Success")
+    
     return {
       status: 200,
       body: {
