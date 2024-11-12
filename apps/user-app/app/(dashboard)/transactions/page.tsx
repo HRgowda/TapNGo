@@ -1,5 +1,5 @@
 import { Transactions } from "@components/Transactions";
-import { fetchUserP2PTransactions } from "app/lib/server_actions/p2pTxnDatabase"; // Adjust the import path as needed
+import { fetchUserP2PTransactions } from "app/lib/server_actions/p2pTxnDatabase"; 
 import { getLoggedUser } from "app/lib/server_actions/userDatabase"
 
 export default async function TransactionsPage() {

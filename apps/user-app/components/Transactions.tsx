@@ -16,13 +16,9 @@ interface Transaction {
   };
 }
 
-interface CurrentUser {
-  id: number;
-}
-
 interface TransactionProps {
   transactionData: Transaction[];
-  currentUserId: CurrentUser;
+  currentUserId: number;
 }
 
 export function Transactions({ transactionData, currentUserId }: TransactionProps) {
