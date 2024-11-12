@@ -4,7 +4,6 @@ import { Card } from "@repo/ui/card";
 import { MagnifyingGlassIcon, QrCodeIcon } from "@heroicons/react/24/solid";
 import Modal from "@components/transfer/Modal";
 import { useState } from "react";
-import QrScanner from "@components/transfer/QrScanner";
 
 interface SendCardProps {
   balance: number;
@@ -52,13 +51,6 @@ export function SendCard({ balance, userDetails }: SendCardProps) {
 
         {/* Modal and QR Scanner Components */}
         <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} users={userDetails} />
-
-        {showQRScanner && (
-          <QrScanner
-            onScanSuccess={handleScanSuccess}
-            onClose={() => setShowQRScanner(false)}
-          />
-        )}
 
         {scanResult && (
           <div className="mt-4 text-sm text-gray-300">
