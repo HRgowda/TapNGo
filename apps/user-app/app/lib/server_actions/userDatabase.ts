@@ -170,7 +170,7 @@ export async function fetchUserTransactions(): Promise<Transaction[]> {
 
   return transactions
     .map((t: any): Transaction | undefined => t.toUser)
-    .filter((user): user is Transaction => user !== undefined);
+    .filter((user: any): user is Transaction => user !== undefined);
 }
 
 export async function fetchUserBalance(): Promise<any> {
