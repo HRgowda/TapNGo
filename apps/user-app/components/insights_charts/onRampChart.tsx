@@ -28,11 +28,11 @@ interface OnRampTransaction {
 
 export function OnRampChart({ data = [] }: { data: OnRampTransaction[] }) {
   const chartData: ChartData<'line'> = {
-    labels: data.map((item) => item.provider),
+    labels: data.map((item: any) => item.provider),
     datasets: [
       {
         label: 'Total Amount Transferred (₹)',
-        data: data.map((item) => item.amount),
+        data: data.map((item: any) => item.amount),
         backgroundColor: (context: ScriptableContext<'line'>): Color => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;

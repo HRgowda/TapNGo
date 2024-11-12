@@ -67,7 +67,7 @@ export const AddMoney = ({ userid }: Props) => {
             onSelect={(value) =>
               setProvider(SUPPORTED_BANKS.find((x) => x.name === value)?.name || "")
             }
-            options={SUPPORTED_BANKS.map((x) => ({
+            options={SUPPORTED_BANKS.map((x: any) => ({
               key: x.name,
               value: x.name,
             }))}

@@ -34,7 +34,7 @@ export function LatestActions({ users, allUsers }: actionsProps) {
 
       {/* Grid layout with responsive spacing for user avatars */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:flex lg:space-x-6 lg:space-y-0 lg:flex-wrap lg:justify-start mt-4">
-        {uniqueUsers.map((user, index) => (
+        {uniqueUsers.map((user, index): any => (
           <div key={index} className="flex flex-col items-center mb-6 sm:mb-8">
             <div
               className="w-16 h-16 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-20 lg:h-20 rounded-full overflow-hidden border-2 border-white mb-3 object-cover cursor-pointer transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-white/40"
@@ -66,7 +66,7 @@ export function LatestActions({ users, allUsers }: actionsProps) {
       <div className="text-gray-300 mt-2">Quick payments to recently onboarded users.</div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:flex lg:space-x-6 lg:space-y-0 lg:flex-wrap lg:justify-start mt-4">
-        {allUsers.map((user, index) => (
+        {allUsers.map((user, index):any => (
           <div key={index} className="flex flex-col items-center mb-6 sm:mb-8">
             <div
               className="w-16 h-16 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-20 lg:h-20 rounded-full overflow-hidden border-2 border-white mb-3 object-cover cursor-pointer transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-white/40"

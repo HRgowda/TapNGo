@@ -50,7 +50,7 @@ export default function Modal({ isOpen, onClose, users }: ModalProps) {
 
         {/* Scrollable user list */}
         <ul className="mt-4 max-h-60 overflow-y-auto space-y-2">
-          {filteredUsers.map((user, index) => (
+          {filteredUsers.map((user, index):any => (
             <li
               key={index}
               className="p-2 flex justify-between items-center space-x-8 border-b hover:bg-slate-700 hover:text-white"

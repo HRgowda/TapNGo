@@ -58,7 +58,7 @@ export function Transactions({ transactionData, currentUserId }: TransactionProp
         <table className="min-w-full border border-gray-700 rounded-lg">
           <thead>
             <tr className="bg-gray-800">
-              {tableHeader.map((name, index) => (
+              {tableHeader.map((name, index): any => (
                 <th
                   key={index}
                   className="px-4 md:px-6 py-3 text-center text-blue-300 text-xs md:text-sm font-semibold border-b border-gray-700"
@@ -124,7 +124,7 @@ export function Transactions({ transactionData, currentUserId }: TransactionProp
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-800">
-              {tableHeader.map((name, index) => (
+              {tableHeader.map((name, index): any => (
                 <th
                   key={index}
                   className="px-2 py-2 text-center text-blue-300 text-xs font-semibold border-b border-gray-700"
@@ -135,7 +135,7 @@ export function Transactions({ transactionData, currentUserId }: TransactionProp
             </tr>
           </thead>
           <tbody className="bg-gray-900 text-xs">
-            {currentTransaction.map((transaction, index) => (
+            {currentTransaction.map((transaction, index):any => (
               <tr
                 key={transaction.id}
                 className="hover:bg-slate-700 transition-colors duration-100 ease-in-out"

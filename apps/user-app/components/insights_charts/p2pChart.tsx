@@ -29,11 +29,11 @@ interface TransactionData {
 // Declare the function using the desired syntax
 export function P2PChart({ data }: { data: TransactionData[] }) {
   const chartData: ChartData<'bar'> = {
-    labels: data.map((item) => item.user),
+    labels: data.map((item: any) => item.user),
     datasets: [
       {
         label: 'Total Amount Transferred (₹)',
-        data: data.map((item) => item.amount),
+        data: data.map((item: any) => item.amount),
         backgroundColor: (context: ScriptableContext<'bar'>): Color => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;

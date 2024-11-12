@@ -131,7 +131,7 @@ export function GoalsModal({ uiProps, userId, title, subTitle1, subTitle2, goalA
       value={selectedType}
     >
       <option value="">{subTitle1}</option>
-      {goalTypes.map((type, index) => (
+      {goalTypes.map((type, index):any => (
         <option key={index} value={type}>
           {type}
         </option>

@@ -16,7 +16,7 @@ export function FeatureButtons() {
   return (
     <Card title="Manage your Finance smoothly!">
       <div className="my-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center">
-        {features.map(({ icon: Icon, text, path }, index) => (
+        {features.map(({ icon: Icon, text, path }, index): any => (
           <div key={index} className="flex flex-col items-center space-y-2">
             <Link href={path}>
               <button 

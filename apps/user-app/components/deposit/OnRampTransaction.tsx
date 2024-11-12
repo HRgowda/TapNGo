@@ -17,7 +17,7 @@ export const OnRampTransactions = ({ transactions }: { transactions: any[] }) =>
       <div className="rounded-xl transition-shadow hover:shadow-lg hover:shadow-white/80">
         <Card title="Recent Bank Transactions">
           <div className="p-2 h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800 scrollbar-thumb-rounded">
-            {transactions.map((t, index) => (
+            {transactions.map((t, index): any => (
               <div key={index} className="flex justify-between border-b border-gray-700 py-2">
                 <div className="p-2">
                   <div className="text-sm text-white">Deposited INR</div>

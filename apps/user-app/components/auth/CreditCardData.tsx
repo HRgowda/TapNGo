@@ -78,7 +78,7 @@ export function CreditCardForm() {
               <div>
                 <label className="block mb-2 text-sm font-semibold">Card Number</label>
                 <div className="flex gap-2">
-                  {credentials.cardNumber.map((number, index) => (
+                  {credentials.cardNumber.map((number, index): any => (
                     <input
                       key={index}
                       id={`cardNumber${index}`}

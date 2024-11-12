@@ -95,12 +95,7 @@ export async function getUserDataWithDepositGoals(id: number): Promise<UserDataW
   };
 }
 
-interface User {
-  id: number;
-  firstName: string;
-}
-
-export async function fetchUsersExceptCurrentUser(): Promise<User[]> {
+export async function fetchUsersExceptCurrentUser() {
   const loggedUser = await getLoggedUser();
 
   const users = await db.user.findMany({
@@ -119,13 +114,13 @@ export async function fetchUsersExceptCurrentUser(): Promise<User[]> {
     take: 5
   });
 
-  return users.map((user): User => ({
+  return users.map((user :any) => ({
     id: user.id,
     firstName: user.firstName,
   }));
 }
 
-export async function fetchAllUsersExceptCurrent(): Promise<User[]> {
+export async function fetchAllUsersExceptCurrent(){
   const loggedUser = await getLoggedUser();
 
   const users = await db.user.findMany({
@@ -143,7 +138,7 @@ export async function fetchAllUsersExceptCurrent(): Promise<User[]> {
     },
   });
 
-  return users.map((user): User => ({
+  return users.map((user :any) => ({
     id: user.id,
     firstName: user.firstName,
   }));

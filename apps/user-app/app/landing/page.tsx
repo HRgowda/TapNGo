@@ -106,7 +106,7 @@ export default function LandingPage() {
           <div className="flex justify-center">
             <div className="w-full max-w-4xl">
               <Slider {...settings} className="w-full">
-                {images.map((image, index) => (
+                {images.map((image, index):any => (
                   <div key={index} className="p-4">
                     <Image src={image.src} alt={image.alt} width={1200} height={800} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1200px"                className="rounded-lg shadow-lg transition-transform transform hover:scale-105" />
                     <p className="text-lg lg:text-xl mt-4 lg:mt-6 text-white font-medium">{image.caption}</p>
