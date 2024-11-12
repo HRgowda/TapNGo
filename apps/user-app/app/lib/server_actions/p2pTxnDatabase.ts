@@ -2,7 +2,16 @@
 
 import db from "@repo/db/client";
 import { getLoggedUser } from "./userDatabase"
-import { notifyBalanceUpdate } from "../../../../websocket-server/src/server"
+
+interface Balance {
+  amount: number;
+  userid: number;
+}
+
+interface User {
+  id: number;
+  firstName: string;
+}
 
 export async function P2PTransfer(to: number, amount: number) {
   const from = await getLoggedUser();
@@ -18,7 +27,7 @@ export async function P2PTransfer(to: number, amount: number) {
       id: Number(to)
     }
   });
-  
+
   if (!toUser) {
     return {
       message: "User not found"
@@ -26,6 +35,7 @@ export async function P2PTransfer(to: number, amount: number) {
   }
 
   await db.$transaction(async (tx) => {
+    // Lock the sender's balance to ensure atomicity
     await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userid" = ${Number(from)} FOR UPDATE`;
 
     const fromBalance = await tx.balance.findUnique({
@@ -41,8 +51,6 @@ export async function P2PTransfer(to: number, amount: number) {
       console.log("Insufficient funds. Available:", fromBalance.amount, "Requested:", amount);
       throw new Error('Insufficient funds');
     }
-
-    // await new Promise(r => setTimeout(r, 4000));
 
     await tx.balance.update({
       where: { userid: Number(from) },
@@ -101,38 +109,37 @@ export async function fetchUserP2PTransactions(loggedUserId: number) {
 }
 
 export async function getP2PTransactions(fromUserId: number) {
-
   const transactions = await db.p2pTransfer.groupBy({
-    by:["toUserId"],
+    by: ["toUserId"],
     _sum: {
       amount: true
     },
     _count: {
       toUserId: true
     },
-    where:{
+    where: {
       fromUserId
     }
-  })
+  });
 
   const data = await Promise.all(
-    
-    transactions.map(async (item)=> {
-    const user = await db.user.findUnique({
-      where:{
-        id: item.toUserId
-      },
-      select:{
-        firstName: true
-      }
-    });
-    return {
-      user: user?.firstName || `User ${item.toUserId}`,
-      amount: item._sum.amount || 0,
-      transactions: item._count.toUserId || 0
-      }
+    transactions.map(async (item) => {
+      const user = await db.user.findUnique({
+        where: {
+          id: item.toUserId
+        },
+        select: {
+          firstName: true
+        }
+      });
+
+      return {
+        user: user?.firstName || `User ${item.toUserId}`,
+        amount: item._sum.amount || 0,
+        transactions: item._count.toUserId || 0
+      };
     })
-  )
+  );
 
   return data;
 }

@@ -8,8 +8,22 @@ interface GoalProps {
   userId: number;
   goalAmount: number;
   type: string;
-  deadline?: Date; // Optional for adding or withdrawing
+  deadline?: Date; 
   action: "create" | "add" | "withdraw";
+}
+
+interface DepositGoal {
+  id: number;
+  userid: number;
+  goalAmount: number;
+  currentSavings: number;
+  goalType: string;
+  deadline: Date | string;
+}
+
+interface Balance {
+  userid: number;
+  amount: number;
 }
 
 export async function handleDepositGoal({ userId, goalAmount, type, deadline, action }: GoalProps) {
@@ -24,11 +38,11 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
     };
   }
 
-  const existingGoal = await db.depositGoals.findUnique({
+  const existingGoal: DepositGoal | null = await db.depositGoals.findUnique({
     where: {
       userid_goalType: { 
         userid: userId, 
-        goalType: type }, // Composite key
+        goalType: type },
     },
   });
 
@@ -47,7 +61,7 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       data: {
         userid: userId,
         goalAmount,
-        currentSavings: 0, // Initialize with zero savings
+        currentSavings: 0, 
         goalType: type,
         deadline: deadline || new Date(), // Default deadline to now if not provided
       },
@@ -77,26 +91,25 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
 
   if (action === "add") {
     console.log("Leo messi")
-    // Increment the savings for the existing goal
-    const currentBalance = await db.balance.findFirst({
-      where:{
+    
+    const currentBalance: Balance | null = await db.balance.findFirst({
+      where: {
         userid: userId
       }
-    })
+    });
 
     const balanceData = currentBalance?.amount || 0;
 
-    if(balanceData < goalAmount){
+    if (balanceData < goalAmount) {
       return {
         status: 400,
-        body:{
+        body: {
           message: "Insufficient funds in your wallet"
         }
       }
     }
 
     await db.$transaction(async (db) => {
-
       await db.depositGoals.update({
         where: {
           userid_goalType: { 
@@ -111,10 +124,10 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       });
   
       await db.balance.update({
-        where:{
+        where: {
           userid: userId
         },
-        data:{
+        data: {
           amount: {
             decrement: goalAmount
           }
@@ -143,7 +156,6 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
 
     // Decrement the savings for the goal
     await db.$transaction(async (db)=> {
-
       await db.depositGoals.update({
         where: {
           userid_goalType: {
@@ -159,11 +171,11 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       });
 
       await db.balance.update({
-        where:{
+        where: {
           userid: userId
         },
-        data:{
-          amount:{
+        data: {
+          amount: {
             increment: goalAmount
           }
         }
