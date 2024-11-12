@@ -4,6 +4,26 @@ import nodemailer from "nodemailer";
 import db from "@repo/db/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/lib/auth";
+import Cors from "cors";
+
+// CORS middleware
+const cors = Cors({
+  methods: ["POST"],
+  origin: "*", // Replace "*" with your frontend domain for security
+  allowedHeaders: ["Content-Type"],
+});
+
+// Helper function to run middleware
+function runMiddleware(req: Request, fn: Function) {
+  return new Promise((resolve, reject) => {
+    fn(req, {} as any, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 const otpExpiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || '5', 10);
 

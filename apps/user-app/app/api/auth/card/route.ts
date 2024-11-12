@@ -1,7 +1,30 @@
 import db from "@repo/db/client";
 import { NextResponse } from "next/server";
+import Cors from "cors";
+
+// CORS middleware
+const cors = Cors({
+  methods: ["POST"],
+  origin: "*", // Replace "*" with your frontend domain for security
+  allowedHeaders: ["Content-Type"],
+});
+
+// Helper function to run middleware
+function runMiddleware(req: Request, fn: Function) {
+  return new Promise((resolve, reject) => {
+    fn(req, {} as any, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 export async function POST(req: Request) {
+  // Run CORS middleware
+  await runMiddleware(req, cors);
+
   try {
     const { cardNumber, validDate, expiryDate, cvv, name } = await req.json();
 
@@ -10,9 +33,7 @@ export async function POST(req: Request) {
         {
           message: "Missing required fields. Please provide all card details.",
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
@@ -22,21 +43,15 @@ export async function POST(req: Request) {
         {
           message: "Invalid name format. First name is required.",
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
-    const name1 = nameParts[0]; 
+    const name1 = nameParts[0];
 
     const user = await db.user.findFirst({
-      where: {
-        firstName: name1,
-      },
-      select: {
-        id: true,
-      },
+      where: { firstName: name1 },
+      select: { id: true },
     });
 
     if (!user) {
@@ -44,9 +59,7 @@ export async function POST(req: Request) {
         {
           message: `User with first name '${name1}' not found.`,
         },
-        {
-          status: 404,
-        }
+        { status: 404 }
       );
     }
 
@@ -56,7 +69,7 @@ export async function POST(req: Request) {
         validDate,
         expiryDate,
         cvv,
-        userid: user.id, 
+        userid: user.id,
       },
     });
 
@@ -65,19 +78,14 @@ export async function POST(req: Request) {
         card: newCard,
         message: "Card created successfully. Please wait",
       },
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (e) {
-
     return NextResponse.json(
       {
         message: "Internal server error. Please try again later.",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
