@@ -7,6 +7,14 @@ import { FinalGoalUi } from "@components/deposit/FinalGoal_Info";
 import { getOnRampTransactions } from "app/lib/server_actions/bankDatabase";
 import { getUserDataWithDepositGoals } from "app/lib/server_actions/userDatabase";
 
+type DepositGoal = {
+  id: number;
+  goalAmount: number;
+  currentSaving: number;
+  deadline: Date;
+  goalType: string;
+};
+
 export default async function DepositPage() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id ? Number(session.user.id) : null;
@@ -33,7 +41,7 @@ export default async function DepositPage() {
 
       <div className="mt-2">
         {userdata?.DepositGoals.length ? (
-          userdata.DepositGoals.map((goal) => (
+          userdata.DepositGoals.map((goal: DepositGoal) => (
             <FinalGoalUi
               key={goal.id}
               userid={userId}
@@ -51,3 +59,4 @@ export default async function DepositPage() {
     </div>
   );
 }
+
