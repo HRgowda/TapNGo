@@ -1,3 +1,4 @@
+"use server"
 import db from "@repo/db/client";
 
 type OnRampTransaction = {
