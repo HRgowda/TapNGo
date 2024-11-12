@@ -169,7 +169,7 @@ export async function fetchUserTransactions(): Promise<Transaction[]> {
   });
 
   return transactions
-    .map((t): Transaction | undefined => t.toUser)
+    .map((t: any): Transaction | undefined => t.toUser)
     .filter((user): user is Transaction => user !== undefined);
 }
 
