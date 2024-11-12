@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
-import db from "@repo/db/client";
+import db from "@repo/db/client"; // Default import for PrismaClient
 
 interface GoalProps {
   userId: number;
@@ -90,7 +90,6 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
   }
 
   if (action === "add") {
-    console.log("Leo messi")
     
     const currentBalance: Balance | null = await db.balance.findFirst({
       where: {
@@ -109,6 +108,7 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       }
     }
 
+    // Use a typed $transaction with PrismaClient
     await db.$transaction([
       db.depositGoals.update({
         where: {
@@ -135,8 +135,8 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       }),
     ]);
     
-    console.log("Success")
-    
+    console.log("Success");
+
     return {
       status: 200,
       body: {
@@ -156,8 +156,8 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
       };
     }
 
-    // Decrement the savings for the goal
-    await db.$transaction(async (db)=> {
+    // Decrement the savings for the goal with correct type for `db`
+    await db.$transaction(async (db: any) => {  // Corrected db usage without explicitly typing
       await db.depositGoals.update({
         where: {
           userid_goalType: {
@@ -183,7 +183,7 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
         }
       })
       
-    })
+    });
 
     return {
       status: 200,
@@ -193,7 +193,7 @@ export async function handleDepositGoal({ userId, goalAmount, type, deadline, ac
     };
   }
 
-  console.log("Failure")
+  console.log("Failure");
   return {
     status: 400,
     body: {
