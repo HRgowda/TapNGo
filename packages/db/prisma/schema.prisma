@@ -10,7 +10,6 @@ datasource db {
 model User {
   id                Int                 @id @default(autoincrement())
   email             String?             @unique
-  number            String              @unique
   password          String
   firstName         String
   lastName          String?
@@ -27,7 +26,6 @@ model Merchant {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
-  auth_type AuthType
 }
 
 model OnRampTransaction {
@@ -54,8 +52,8 @@ model p2pTransfer {
 model Balance {
   id     Int  @id @default(autoincrement())
   userid Int  @unique
-  amount Int  @default(100000)
-  locked Int
+  amount Int  @default(1000)
+  locked Int  @default(200)
   user   User @relation(fields: [userid], references: [id])
 }
 
@@ -88,11 +86,6 @@ model otp {
   otpHashed String
   used      Boolean  @default(false)
   expiresAt DateTime
-}
-
-enum AuthType {
-  Google
-  Github
 }
 
 enum onrampStatus {

@@ -3,11 +3,10 @@ import { hash } from 'bcrypt';
 import db  from '@repo/db/client'; 
 
 export async function POST(req: Request) {
-  const { firstName, lastName, email, number, password, pin } = await req.json();
+  const { firstName, lastName, email, password, pin } = await req.json();
 
-  // Basic validation
-  if (!email || !password) {
-    return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
+  if (!email || !password || !firstName || !pin) {
+    return NextResponse.json({ message: 'Missing required fields. Please provide all details' }, { status: 400 });
   }
 
   try {
@@ -18,13 +17,18 @@ export async function POST(req: Request) {
         firstName,
         lastName,
         email,
-        number,
         password: hashedPassword,
-        pin: (pin),
+        pin: pin,
+        Balance: {
+          create:{
+            amount: 1000,
+            locked: 200
+          }
+        }
       },
     });
 
-    return NextResponse.json({ message: "Account createad successfully" }, { status: 200 });
+    return NextResponse.json({ message: "Account createad successfully. Please wait" }, { status: 200 });
   } catch (error) {
     console.error('Error creating user:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

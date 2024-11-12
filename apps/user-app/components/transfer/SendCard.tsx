@@ -43,10 +43,10 @@ export function SendCard({ balance, userDetails }: SendCardProps) {
 
           <button
             className="w-full sm:w-1/2 rounded-full py-2 px-2 text-white text-lg flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-800 hover:from-blue-800 hover:to-blue-400"
-            onClick={() => setShowQRScanner(true)}
+            
           >
             <QrCodeIcon className="h-6 w-6 text-white mr-2" />
-            Scan QR
+            Scan QR (comming soon)
           </button>
         </div>
 

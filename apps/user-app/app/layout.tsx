@@ -1,13 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { Providers } from "../provider";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "tapNgo",
-  description: "Simple wallet app",
+  description: "Financial application",
+  icons:{
+    icon: '/favicon.ico'
+  }
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <body className={inter.className}>
+        <body>
           <div className="min-w-screen min-h-screen bg-gray-700">
             {/* <AppbarClient /> */}
             {children}

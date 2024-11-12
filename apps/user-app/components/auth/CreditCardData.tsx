@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { alertMessage as AlertMessage } from '@components/AlertMessage';
 
 export function CreditCardForm() {
   const [credentials, setCredentials] = useState({
@@ -12,6 +13,8 @@ export function CreditCardForm() {
     cvv: "",
     name: ""
   });
+  const [alertMessage, setAlertMessage] = useState<{ message: string, status: "success" | "failure" } | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -40,24 +43,35 @@ export function CreditCardForm() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const formattedCardNumber = credentials.cardNumber.join(""); // Combine card number parts
     try {
       const response = await axios.post("/api/auth/card", { ...credentials, cardNumber: formattedCardNumber });
 
       if (response.status === 200) {
-        alert("Successfully stored card details!");
+        setAlertMessage({ message: response.data.message, status: "success" });
         router.push("/home");
       }
-    } catch (e) {
-      alert("Failed to store your card details.");
+    } catch (error) {
+      // Type guard to check if error is an AxiosError
+      if (axios.isAxiosError(error)) {
+        // Handle AxiosError specifically
+        const errorMessage = error.response?.data?.message || "Failed to store your card details.";
+        setAlertMessage({ message: errorMessage, status: "failure" });
+      } else {
+        // Handle generic errors
+        setAlertMessage({ message: "An unexpected error occurred.", status: "failure" });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <section className="h-screen flex justify-center items-center">
+    <section className="text-white h-screen flex justify-center items-center">
       <div className="flex justify-center items-center">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-2xl">
+        <div className="w-full max-w-md">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold md:text-2xl text-center">Enter your card details</h1>
             <form className="space-y-4 md:space-y-6" onSubmit={submit}>
@@ -72,7 +86,7 @@ export function CreditCardForm() {
                       placeholder='XXXX'
                       maxLength={4}
                       value={credentials.cardNumber[index]}
-                      className="border border-gray-300 sm:text-sm rounded-lg w-full p-2.5 text-center"
+                      className="bg-[#121212] border border-gray-300 sm:text-sm rounded-lg w-full p-2.5 text-center"
                       onChange={(e) => handleCardInputChange(index, e.target.value)}
                     />
                   ))}
@@ -85,7 +99,7 @@ export function CreditCardForm() {
                   <input
                     type="text"
                     value={credentials.validDate}
-                    className="border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
+                    className="bg-[#121212] border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
                     placeholder="MM/YY"
                     maxLength={5} // Ensures MM/YY format
                     onChange={(e) => handleDateInputChange('validDate', e.target.value)}
@@ -97,7 +111,7 @@ export function CreditCardForm() {
                   <input
                     type="text"
                     value={credentials.expiryDate}
-                    className="border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
+                    className="bg-[#121212] border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
                     placeholder="MM/YY"
                     maxLength={5}
                     onChange={(e) => handleDateInputChange('expiryDate', e.target.value)}
@@ -110,7 +124,7 @@ export function CreditCardForm() {
                 <input
                   type="password"
                   name="cvv"
-                  className="border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
+                  className="bg-[#121212] border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
                   placeholder="123"
                   maxLength={3}
                   onChange={(e) => setCredentials({ ...credentials, cvv: e.target.value })}
@@ -122,18 +136,18 @@ export function CreditCardForm() {
                 <input
                   type="text"
                   name="name"
-                  className="border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
+                  className="bg-[#121212] border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5"
                   placeholder="John Doe"
                   onChange={(e) => setCredentials({ ...credentials, name: e.target.value })}
                 />
               </div>
 
-              <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                Next
+              <button type="submit" className="w-full text-black bg-white hover:bg-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                {loading ? "Please Wait..." : "Done"}
               </button>
 
               <div className="flex justify-center items-center">
-                <a className="font-light text-blue-600 hover:underline" href="/home">
+                <a className="font-light text-white hover:underline" href="/home">
                   Skip for now
                 </a>
               </div>
@@ -141,6 +155,13 @@ export function CreditCardForm() {
           </div>
         </div>
       </div>
+
+      {alertMessage && (
+        <AlertMessage
+          description={alertMessage.message}
+          status={alertMessage.status}
+        />
+      )}
     </section>
   );
 }

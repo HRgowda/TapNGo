@@ -44,7 +44,9 @@ export const AddMoney = ({ userid }: Props) => {
       });
 
       if (response.status === 200) {
+        const token = response.data.token
         setAlertMessage({ message: response.data.message, status: "success" });
+        setTransactionToken(token)
         setModalOpen(true);
         setTimeout(() => setAlertMessage(null), 2000);
       }

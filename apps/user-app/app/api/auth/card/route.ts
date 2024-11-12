@@ -1,57 +1,83 @@
-
-import db from "@repo/db/client"
+import db from "@repo/db/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  try{
+  try {
+    const { cardNumber, validDate, expiryDate, cvv, name } = await req.json();
 
-    const {cardNumber, validDate, expiryDate, cvv, name} = await req.json();
+    if (!cardNumber || !validDate || !expiryDate || !cvv || !name) {
+      return NextResponse.json(
+        {
+          message: "Missing required fields. Please provide all card details.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-    // const hashedCvv = await bcrypt.hash(cvv, 3)
-    const name1 = name.split(" ")[0]
+    const nameParts = name.split(" ");
+    if (nameParts.length < 1) {
+      return NextResponse.json(
+        {
+          message: "Invalid name format. First name is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const name1 = nameParts[0]; 
 
     const user = await db.user.findFirst({
-      where:{ 
-        firstName: name1
+      where: {
+        firstName: name1,
       },
-        select:{
-        id: true
-      }
-    })
+      select: {
+        id: true,
+      },
+    });
 
-    if (!user){
-      return NextResponse.json({
-        message: "Failed1"
-      }, {
-        status: 400
-      });
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: `User with first name '${name1}' not found.`,
+        },
+        {
+          status: 404,
+        }
+      );
     }
 
     const newCard = await db.card.create({
-     data:{
-     cardNumber,
-     validDate,
-     expiryDate,
-     cvv,
-     userid: user?.id
-     }      
-    })
-
-    return NextResponse.json({
-      card: newCard
-    },{
-      status: 200
-    })
-
-  } catch (e) {
-    console.error(e); // Log the error
-    return NextResponse.json({
-      message: "Failed2" // Include error message in the response
-    }, {
-      status: 500, // Return 500 status for internal server errors
+      data: {
+        cardNumber,
+        validDate,
+        expiryDate,
+        cvv,
+        userid: user.id, 
+      },
     });
+
+    return NextResponse.json(
+      {
+        card: newCard,
+        message: "Card created successfully. Please wait",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+
+    return NextResponse.json(
+      {
+        message: "Internal server error. Please try again later.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
-  
-
 }
-

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react"; // Import signIn from NextAuth
-import { alertMessage  as AlertMessage} from "@components/AlertMessage";
+import { alertMessage as AlertMessage } from "@components/AlertMessage";
 
 export function SignUp() {
   const [credentials, setCredentials] = useState({
@@ -18,10 +18,13 @@ export function SignUp() {
 
   const [alertMessage, setAlertMessage] = useState<{ message: string; status: "success" | "failure" } | null>(null);
 
+  const [loading, setLoading] = useState<boolean | null>(false)
+
   const router = useRouter();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true)
 
     try {
       // Step 1: Sign up the user
@@ -37,6 +40,7 @@ export function SignUp() {
           password: credentials.password,
         });
 
+        setLoading(false)
         // Check if sign-in was successful
         if (signInResponse?.ok) {
           router.push('/card_data');
@@ -114,7 +118,7 @@ export function SignUp() {
             </div>
 
             <button type="submit" className="w-full text-black bg-white hover:bg-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-              Next
+              {loading ? "Signing..." : "Next"}
             </button>
 
             <div className="text-sm text-center font-light text-gray-500">
@@ -126,6 +130,12 @@ export function SignUp() {
           </form>
         </div>
       </div>
+      {alertMessage && (
+          <AlertMessage
+            description={alertMessage.message}
+            status={alertMessage.status}
+          />
+        )}
     </section>
   );
 }
