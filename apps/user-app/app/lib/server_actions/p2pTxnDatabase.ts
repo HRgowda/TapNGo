@@ -34,7 +34,7 @@ export async function P2PTransfer(to: number, amount: number) {
     };
   }
 
-  await db.$transaction(async (tx) => {
+  await db.$transaction(async (tx: any) => {
     // Lock the sender's balance to ensure atomicity
     await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userid" = ${Number(from)} FOR UPDATE`;
 
@@ -93,7 +93,7 @@ export async function fetchUserP2PTransactions(loggedUserId: number) {
     }
   });
 
-  return p2ptxn.map(tx => ({
+  return p2ptxn.map((tx: any) => ({
     id: tx.id,
     date: tx.timestamp,
     amount: tx.amount,
@@ -123,7 +123,7 @@ export async function getP2PTransactions(fromUserId: number) {
   });
 
   const data = await Promise.all(
-    transactions.map(async (item) => {
+    transactions.map(async (item: any) => {
       const user = await db.user.findUnique({
         where: {
           id: item.toUserId

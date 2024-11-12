@@ -4,12 +4,19 @@ import db from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "app/lib/auth";
 
-export async function getLoggedUser() {
+// Define the return type of the getLoggedUser function
+export async function getLoggedUser(): Promise<number | undefined> {
   const session = await getServerSession(authOptions);
   return session?.user.id;
 }
 
-export async function getUserBalance(userId: number) {
+// Define types for balance data and user
+interface Balance {
+  amount: number;
+  locked: number;
+}
+
+export async function getUserBalance(userId: number): Promise<Balance> {
   const balanceData = await db.balance.findUnique({
     where: { 
       userid: Number(userId) 
@@ -22,7 +29,18 @@ export async function getUserBalance(userId: number) {
   }
 }
 
-export async function getUserWithCard(userId: number) {
+interface Card {
+  id: number;
+  cardNumber: string;
+  expiryDate: string;
+}
+
+interface UserWithCard {
+  fullName: string;
+  card: Card | null;
+}
+
+export async function getUserWithCard(userId: number): Promise<UserWithCard | null> {
   const userData = await db.user.findFirst({
     where: { 
       id: Number(userId) 
@@ -32,7 +50,7 @@ export async function getUserWithCard(userId: number) {
     },
   });
 
-  if (!userData) return null;
+  if (!userData || !userData.Card[0]) return null;
 
   return {
     fullName: `${userData.firstName} ${userData.lastName || ''}`.trim(),
@@ -40,7 +58,20 @@ export async function getUserWithCard(userId: number) {
   };
 }
 
-export async function getUserDataWithDepositGoals(id: number) {
+interface DepositGoal {
+  id: number;
+  goalAmount: number;
+  currentSaving: number;
+  deadline: Date;
+  goalType: string;
+}
+
+interface UserDataWithDepositGoals {
+  firstName: string;
+  DepositGoals: DepositGoal[];
+}
+
+export async function getUserDataWithDepositGoals(id: number): Promise<UserDataWithDepositGoals | null> {
   const data = await db.user.findUnique({
     where: { 
       id: Number(id)
@@ -54,7 +85,7 @@ export async function getUserDataWithDepositGoals(id: number) {
 
   return {
     firstName: data.firstName,
-    DepositGoals: data.goals.map((goal) => ({
+    DepositGoals: data.goals.map((goal: any) => ({
       id: goal.id,
       goalAmount: goal.goalAmount,
       currentSaving: goal.currentSavings,
@@ -64,7 +95,12 @@ export async function getUserDataWithDepositGoals(id: number) {
   };
 }
 
-export async function fetchUsersExceptCurrentUser() {
+interface User {
+  id: number;
+  firstName: string;
+}
+
+export async function fetchUsersExceptCurrentUser(): Promise<User[]> {
   const loggedUser = await getLoggedUser();
 
   const users = await db.user.findMany({
@@ -83,13 +119,13 @@ export async function fetchUsersExceptCurrentUser() {
     take: 5
   });
 
-  return users.map(user => ({
+  return users.map((user): User => ({
     id: user.id,
     firstName: user.firstName,
   }));
 }
 
-export async function fetchAllUsersExceptCurrent() {
+export async function fetchAllUsersExceptCurrent(): Promise<User[]> {
   const loggedUser = await getLoggedUser();
 
   const users = await db.user.findMany({
@@ -107,13 +143,18 @@ export async function fetchAllUsersExceptCurrent() {
     },
   });
 
-  return users.map(user => ({
+  return users.map((user): User => ({
     id: user.id,
     firstName: user.firstName,
   }));
 }
 
-export async function fetchUserTransactions() {
+interface Transaction {
+  firstName: string;
+  id: number;
+}
+
+export async function fetchUserTransactions(): Promise<Transaction[]> {
   const loggedUser = await getLoggedUser();
 
   const transactions = await db.p2pTransfer.findMany({
@@ -132,14 +173,12 @@ export async function fetchUserTransactions() {
     take: 5
   });
 
-  // This check is to filter if any toUser data is undefined so that it encounters runtime error since the value would be undefined so the filter() function would remove all the values of undefined in the userTransactions array.
-
   return transactions
-    .map(t => t.toUser)
-    .filter(user => user !== undefined) as { firstName: string; id: number }[];
+    .map((t): Transaction | undefined => t.toUser)
+    .filter((user): user is Transaction => user !== undefined);
 }
 
-export async function fetchUserBalance() {
+export async function fetchUserBalance(): Promise<any> {
   const loggedUser = await getLoggedUser();
 
   return await db.balance.findFirst({
