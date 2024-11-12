@@ -40,8 +40,8 @@ export default async function DepositPage() {
       </div>
 
       <div className="mt-2">
-        {userdata?.DepositGoals.length ? (
-          userdata.DepositGoals.map((goal: DepositGoal) => (
+        {userdata?.DepositGoals?.length ? (
+          userdata?.DepositGoals?.map((goal: DepositGoal) => (
             <FinalGoalUi
               key={goal.id}
               userid={userId}
