@@ -1,7 +1,8 @@
 "use server"
+
 import db from "@repo/db/client";
 
-type OnRampTransaction = {
+interface OnRampTransaction {
   id: number;
   startTime: string | Date; 
   amount: number;
