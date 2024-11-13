@@ -6,7 +6,7 @@ import Cors from "cors";
 // CORS middleware
 const cors = Cors({
   methods: ["POST"],
-  origin: "*", // Replace "*" with your frontend domain for security
+  origin: "https://tapngo-userapp.vercel.app/", 
   allowedHeaders: ["Content-Type"],
 });
 
@@ -23,6 +23,8 @@ function runMiddleware(req: Request, fn: Function) {
 }
 
 export async function POST(req: Request) {
+  await runMiddleware(req, cors)
+
   const { firstName, lastName, email, password, pin } = await req.json();
 
   if (!email || !password || !firstName || !pin) {
