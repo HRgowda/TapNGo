@@ -5,7 +5,7 @@ import Cors from "cors";
 // CORS middleware
 const cors = Cors({
   methods: ["POST"],
-  origin: "*", // Replace "*" with your frontend domain for security
+  origin: "https://tapngo-userapp.vercel.app/", // Replace "*" with your frontend domain for security
   allowedHeaders: ["Content-Type"],
 });
 

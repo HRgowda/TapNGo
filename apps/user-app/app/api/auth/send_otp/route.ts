@@ -9,7 +9,7 @@ import Cors from "cors";
 // CORS middleware
 const cors = Cors({
   methods: ["POST"],
-  origin: "*", // Replace "*" with your frontend domain for security
+  origin: "https://tapngo-userapp.vercel.app/", // Replace "*" with your frontend domain for security
   allowedHeaders: ["Content-Type"],
 });
 
@@ -69,6 +69,7 @@ const storeOtp = async (email: string, otp: string) => {
 };
 
 export async function POST(req: NextRequest) {
+  await runMiddleware(req, cors)
   const { email } = await req.json();
   const otp = generateOtp();
   const session = await getServerSession(authOptions);
