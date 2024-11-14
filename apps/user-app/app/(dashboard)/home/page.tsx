@@ -9,12 +9,12 @@ export default async function HomePage() {
   const userCard = await getUserWithCard(userId);
   const balance = await getUserBalance(Number(userId));
 
-  if (!userCard) return <div className="text-white font-bold text-4xl flex items-center">User data not found.</div>;
+  // if (!userCard) return <div className="text-white font-bold text-4xl flex items-center">User data not found.</div>;
 
   return (
     <div className="p-3">
       <div className="mb-2">
-        <Dashboard fullName={userCard.fullName} card={userCard.card} balance={balance} />
+        <Dashboard fullName={userCard?.fullName} card={userCard?.card} balance={balance} />
       </div>
       <div>
         <FeatureButtons />

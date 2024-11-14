@@ -11,25 +11,25 @@ export const authOptions = {
         password: { label: "Password", type: "password", required: true }
       },
       async authorize(credentials: any) {
-        // Find the existing user based on the provided email
+        // Find the user by email
         const existingUser = await db.user.findFirst({
           where: {
             email: credentials.email, // Use email to find the user
           },
         });
 
-        // If the user doesn't exist, return null (no login)
+        // If the user does not exist, throw an error
         if (!existingUser) {
-          return null;
+          throw new Error('No user found with this email');
         }
 
-        // Validate the password using bcrypt
+        // Check if the password matches
         const isPasswordValid = await bcrypt.compare(credentials.password, existingUser.password);
         if (!isPasswordValid) {
-          return null;
+          throw new Error('Invalid password');
         }
 
-        // If the password is valid, return the user details
+        // If credentials are valid, return the user
         return {
           id: existingUser.id.toString(),
           name: existingUser.firstName,
@@ -38,11 +38,20 @@ export const authOptions = {
       },
     }),
   ],
-  secret: process.env.JWT_SECRET || "secret",
+  secret: process.env.JWT_SECRET || "secret", // You should set a secret for JWT
   callbacks: {
     async session({ token, session }: any) {
-      session.user.id = token.sub;
+      session.user.id = token.sub; // Add user id to session object
       return session;
     },
-  },
-};
+  //   async redirect({ url, baseUrl }: any) {
+  //     // Ensure the redirect is to /home after login, otherwise fall back to the base URL
+  //     return url.startsWith(baseUrl) ? url : `${baseUrl}/home`;
+  //   },
+  // },
+  // pages: {
+  //   error: '/auth/error', // Customize the error page URL if needed
+  // },
+  // debug: process.env.NODE_ENV === 'development', // Enables debug mode in development
+}
+}
