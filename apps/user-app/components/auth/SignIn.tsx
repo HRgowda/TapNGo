@@ -53,7 +53,7 @@ export default function SignIn(){
                 <label className="block mb-2 font-semibold text-sm">Password</label>
                 <input
                   type="password"
-                  name="paswword"
+                  name="password"
                   className="border bg-[#121212] border-white/50 sm:text-sm rounded-lg block w-full p-2.5"
                   placeholder="Erickson"
                   onChange={(e) => setdata({ ...data, password: e.target.value })}

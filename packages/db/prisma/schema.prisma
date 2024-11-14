@@ -14,7 +14,6 @@ model User {
   firstName         String
   lastName          String?
   pin               String
-  number            String?
   Balance           Balance?
   Card              Card[]
   goals             DepositGoals[]
