@@ -28,6 +28,7 @@ export const AddMoney = ({ userid }: Props) => {
     status: "success" | "failure";
   } | null>(null);
   const [transactionToken, setTransactionToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean | null>(false)
 
   const handleSubmit = async () => {
     if (amount <= 0) {
@@ -35,7 +36,7 @@ export const AddMoney = ({ userid }: Props) => {
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
-
+    setLoading(true)
     try {
       const response = await axios.post("http://localhost:3003/create_onramp", {
         amount,
@@ -47,8 +48,9 @@ export const AddMoney = ({ userid }: Props) => {
         const token = response.data.token
         setAlertMessage({ message: response.data.message, status: "success" });
         setTransactionToken(token)
+        setLoading(false)
         setModalOpen(true);
-        setTimeout(() => setAlertMessage(null), 2000);
+        setTimeout(() => setAlertMessage(null), 3000);
       }
     } catch (error) {
       console.error("Error initiating deposit:");
@@ -73,7 +75,7 @@ export const AddMoney = ({ userid }: Props) => {
             }))}
           />
           <div className="flex justify-center pt-4">
-            <Button onClick={handleSubmit}>Add Money</Button>
+            <Button onClick={handleSubmit}>{loading ? "Processing..." : "Add Money"}</Button>
           </div>
         </div>
 

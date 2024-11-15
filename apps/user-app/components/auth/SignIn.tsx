@@ -2,16 +2,22 @@
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { alertMessage as AlertMessage} from "@components/AlertMessage"
 
 export default function SignIn(){
   const [data, setdata] = useState({
     email: "",
     password: ""
   })
+
+  const [alertMessage, setAlertMessage] = useState<{message: string; status: "success" | "failure"} | null>(null);
+  const [loading, setLoading] = useState<boolean | null>(false)
   
   const router = useRouter();    
   const submit = async(e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    
     try{
 
       const result = await signIn('credentials',{
@@ -21,14 +27,26 @@ export default function SignIn(){
       });
 
       if (result?.ok){
-        await router.push("/home")
+        setAlertMessage({
+          message: "Logged in.",
+          status: "success"
+        })
+       setTimeout(async () => {
+         await router.push("/home");         
+       }, 3000)
         console.log("signed in ")        
       }else{
-        console.log("Error while signing in", result?.error);
+        setAlertMessage({
+          message: "Error while signing in.",
+          status: "failure"
+        });
       }
       
     } catch(e){
-      console.log("Error while logging", e)
+      setAlertMessage({
+        message: "Error while logging in. Please try again later",
+        status: "failure"
+      })
     }  
   }
   return (
@@ -61,7 +79,7 @@ export default function SignIn(){
               </div>      
 
             <button type="submit" className="w-full text-black bg-white/90 hover:bg-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-              LogIn
+              {loading ? "Logging in..." : "Log In"}
             </button>
 
             <div className="text-sm font-light text-center text-gray-500">
@@ -73,6 +91,12 @@ export default function SignIn(){
           </form>
         </div>
       </div>
+      {alertMessage && (
+          <AlertMessage
+            description={alertMessage.message}
+            status={alertMessage.status}
+          />
+        )}
     </section>
   );
 }

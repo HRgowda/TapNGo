@@ -51,7 +51,9 @@ export function CreditCardForm() {
 
       if (response.status === 200) {
         setAlertMessage({ message: response.data.message, status: "success" });
-        router.push("/home");
+        setTimeout(() => {
+          router.push("/home");
+        }, 3000)
       }
     } catch (error) {
       // Type guard to check if error is an AxiosError
@@ -143,7 +145,7 @@ export function CreditCardForm() {
               </div>
 
               <button type="submit" className="w-full text-black bg-white hover:bg-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                {loading ? "Please Wait..." : "Done"}
+                {loading ? "Processing..." : "Done"}
               </button>
 
               <div className="flex justify-center items-center">

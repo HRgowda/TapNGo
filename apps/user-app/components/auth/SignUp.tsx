@@ -32,7 +32,9 @@ export function SignUp() {
 
       if (response.status === 200) {
         setAlertMessage({message: response.data.message, status: "success"});
-
+        setTimeout(() => {
+          setAlertMessage(null)
+        }, 4000)
         // Step 2: Automatically sign in the user
         const signInResponse = await signIn("credentials", {
           redirect: false, // Prevent redirect, we handle it manually
@@ -40,10 +42,10 @@ export function SignUp() {
           password: credentials.password,
         });
 
-        setLoading(false)
         // Check if sign-in was successful
         if (signInResponse?.ok) {
           router.push('/card_data');
+          setLoading(false)
         } else {
           setAlertMessage({message: "Sign-in failed. Please check your credentials.", status: "failure"});
         }
