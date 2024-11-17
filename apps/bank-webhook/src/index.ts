@@ -1,32 +1,45 @@
 import express from "express";
 import cors from "cors";
 import db from "@repo/db/client";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 app.use(express.json());
 
-// Configure CORS (restrict origins in production)
+// Custom Rate Limit Handler
+const depositLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 3, // Limit each IP to 3 requests per windowMs
+  message: "Too many requests, try again after 5 minutes",
+  standardHeaders: true, 
+  legacyHeaders: false, 
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      message: "Too many requests, try again after 5 minutes.",
+    });
+  },
+});
+
+
 app.use(cors({ origin: "*" }));
 
-// Webhook Routes
+function generateToken(): string {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
 
-app.post("/create_onramp", async (req, res) => {
+// Create onRamp transaction
+app.post("/create_onramp", depositLimiter, async (req, res) => {
   const { amount, provider, user_identifier } = req.body;
 
-  if (!amount || !provider) {
-    return res.status(400).json({
-      message: "Invalid request payload, please provide all required fields.",
-    });
+  if (!amount || !provider || !user_identifier) {
+    return res.status(400).json({ message: "Invalid request payload." });
   }
-   else if (amount < 0) {
-    return res.status(400).json({
-       message: "Please enter a valid amount." 
-      });
-  } 
-  else if (amount > 15000) {
-    return res.status(400).json({
-      message: "Amount should be less than Rs 15,000.",
-    });
+  if (isNaN(Number(amount)) || Number(amount) <= 0) {
+    return res.status(400).json({ message: "Invalid amount." });
+  }
+  if (Number(amount) > 15000) {
+    return res.status(400).json({ message: "Amount should be less than Rs 15,000." });
   }
 
   try {
@@ -35,119 +48,75 @@ app.post("/create_onramp", async (req, res) => {
     await db.onRampTransaction.create({
       data: {
         userid: user_identifier,
-        amount,
+        amount: Number(amount),
         provider,
         startTime: new Date(),
         status: "Processing",
-        token
+        token,
       },
     });
 
-    return res.status(200).json({
-      message: "Deposit initiated.",
-      token: token,
-    });
+    return res.status(200).json({ message: "Deposit initiated.", token });
   } catch (error) {
     console.error("Transaction error:", error);
-    return res.status(500).json({
-      message: "Internal server error.",
-    });
-  }
-
-  function generateToken(): string {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    return res.status(500).json({ message: "Internal server error." });
   }
 });
 
-// complete the processing onRamp
-app.post("/complete_onramp", async (req, res) => {
-  console.log("Request Body:", req.body); // Log the request body
+app.post("/complete_onramp", depositLimiter, async (req, res) => {
   const { token, user_identifier, amount, pin } = req.body;
 
-  // Check for required fields
+  // Validate input
   if (!token || !user_identifier || !amount) {
-    return res.status(400).json({
-      message: "Invalid request payload. Please provide all required fields.",
-    });
+    return res.status(400).json({ message: "Invalid request payload." });
   }
 
   try {
-    // Find the corresponding transaction
     const transaction = await db.onRampTransaction.findFirst({
-      where: { 
-        token, 
-        status: "Processing" 
-      },
+      where: { token, status: "Processing" },
     });
 
     if (!transaction) {
-      return res.status(404).json({
-        message: "Transaction not found or already completed.",
-      });
+      return res.status(404).json({ message: "Transaction not found or already completed." });
+    }
+
+    if (Number(amount) !== transaction.amount) {
+      return res.status(400).json({ message: "Amount mismatch for the transaction." });
     }
 
     const user = await db.user.findUnique({
-      where: { 
-        id: Number(user_identifier)
-      },
-      select: { 
-        pin: true 
-      },
+      where: { id: Number(user_identifier) },
+      select: { pin: true },
     });
 
     if (!user) {
-      return res.status(404).json({ 
-        message: "User not found." 
-      });
+      return res.status(404).json({ message: "User not found." });
     }
 
-    // If a PIN is provided, validate it
-    if (pin !== undefined) {
-      if(user.pin !== pin){
-        return res.status(400).json({
-          message: "Invalid PIN. Please enter a valid PIN."
-        });
-      }
-    } else {
-      console.log("Otp verfication succeeded")
+    if (pin !== undefined && user.pin !== pin) {
+      return res.status(400).json({ message: "Invalid PIN." });
     }
 
-    // Proceed with the deposit
     await db.$transaction([
+
       db.balance.upsert({
-        where: { 
-          userid: Number(user_identifier)
-        },
-        update: {
-          amount: { increment: Number(amount) } 
-        },
-        create: {
-          userid: Number(user_identifier),
-          amount: Number(amount),
-          locked: 0,
-        },
+        where: { userid: Number(user_identifier) },
+        update: { amount: { increment: Number(amount) } },
+        create: { userid: Number(user_identifier), amount: Number(amount), locked: 0 },
       }),
 
       db.onRampTransaction.updateMany({
         where: { token },
-        data: { 
-          status: "Success"
-        },
+        data: { status: "Success" },
       }),
     ]);
 
-    return res.status(200).json({
-      message: "Deposited successfully." 
-    });
+    return res.status(200).json({ message: "Deposited successfully." });
   } catch (error) {
     console.error("Webhook processing error:", error);
-    return res.status(500).json({
-      message: "Internal server error. Please try again later.",
-    });
+    return res.status(500).json({ message: "Internal server error." });
   }
 });
 
 const PORT = 3003;
-app.listen(PORT, () =>
-  console.log(`Webhook server running on port ${PORT}`)
-);
+app.listen(PORT, () => console.log(`Webhook server running on port ${PORT}`));
