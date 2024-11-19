@@ -1,0 +1,39 @@
+name: Build on push or PR for bank-webhook
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies for bank-webhook
+        run: |
+          cd apps/bank-webhook
+          npm install --legacy-peer-deps
+
+      - name: Install dependencies for database
+        run: |
+          cd packages/db
+          npm install --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Run build
+        run: |
+          cd apps/bank-webhook
+          npm run build
