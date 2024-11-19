@@ -14,7 +14,7 @@
   "author": "Hemanth",
   "license": "ISC",
   "dependencies": {
-    "@repo/db": "*",
+    "@repo/db": "file:../../packages/db",
     "@types/express": "^4.17.21",
     "cors": "^2.8.5",
     "express": "^4.19.1"
