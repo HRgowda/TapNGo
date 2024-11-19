@@ -27,7 +27,7 @@ jobs:
 
       - name: Install dependencies for database
         run: |
-          cd packages/db
+          cd packages/db 
           npm install --legacy-peer-deps
 
       - name: Generate Prisma client
