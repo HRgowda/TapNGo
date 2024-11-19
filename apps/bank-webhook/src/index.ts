@@ -3,6 +3,8 @@ import cors from "cors";
 import db from "@repo/db/client";
 import rateLimit from "express-rate-limit";
 
+// Bank-webhook server
+
 const app = express();
 app.use(express.json());
 
