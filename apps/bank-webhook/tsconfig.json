@@ -3,12 +3,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "module": "NodeNext",            // Set module system to NodeNext for ES module support
-    "moduleResolution": "NodeNext",   // Ensure the module resolution strategy is compatible
-    "target": "ESNext",               // Target the latest version of ECMAScript
-    "esModuleInterop": true,          // Enable interoperability between CommonJS and ES modules
-    "strict": true                    // Enable all strict type-checking options
+    "module": "NodeNext",            
+    "moduleResolution": "NodeNext",   
+    "target": "ESNext",               
+    "esModuleInterop": true,          
+    "strict": true                    
   },
-  "include": ["src/**/*"],           // Include all TypeScript files in the src folder
-  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist folders
+  "include": ["src/**/*.ts"],           
+  "exclude": ["node_modules", "dist"] 
 }

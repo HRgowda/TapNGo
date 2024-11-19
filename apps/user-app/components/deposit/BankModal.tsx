@@ -107,7 +107,6 @@ export function BankModal({
     }
   }; 
 
-
   const handleDepositwithPin = async () => {
     if (!pin) {
       setAlertMessage({

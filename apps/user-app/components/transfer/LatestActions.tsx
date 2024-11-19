@@ -28,7 +28,7 @@ export function LatestActions({ users, allUsers }: actionsProps) {
   );
 
   return (
-    <div className="bg-gray-900 rounded-xl h-full text-white p-6 transition-shadow duration-300 hover:shadow-lg hover:shadow-white/40">
+    <div className="bg-gray-900 rounded-xl h-full border border-gray-500 text-white p-6 transition-shadow duration-300 hover:shadow-lg hover:shadow-white/40">
       <div className="text-xl font-bold">Latest Actions</div>
       <div className="text-gray-300 mt-2">Your most recent transactions</div>
 

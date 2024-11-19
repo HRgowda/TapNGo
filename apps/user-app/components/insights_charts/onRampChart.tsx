@@ -114,7 +114,7 @@ export function OnRampChart({ data = [] }: { data: OnRampTransaction[] }) {
   };
 
   return (
-    <div className="flex bg-gray-900 p-6 rounded-lg hover:shadow-lg hover:shadow-white/50">
+    <div className="flex bg-gray-900 border border-gray-500 p-6 rounded-lg hover:shadow-lg hover:shadow-white/50">
       <Line data={chartData} options={options} className="flex-1" />
     </div>
   );

@@ -9,7 +9,7 @@ export function InitialGoalUi({userid}: {userid: number}) {
 
   return (
     <div id="vision-vault">
-      <div className="bg-gray-900 text-white rounded-xl shadow-lg p-6">
+      <div className="bg-gray-900 border border-gray-500 text-white rounded-xl shadow-lg p-6">
         <div className="font-extrabold text-4xl text-start bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 mb-6">
           Fund the Future: Save with Purpose
         </div>

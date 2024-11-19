@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function Dashboard({ fullName, card, balance }: any) {
   return (
-    <div className="w-full px-4 lg:px-0 text-white">
+    <div className="w-full lg:py-2 text-white">
       <Card title="">
         <div className="flex flex-col lg:flex-row lg:space-x-8">
           <div className="w-full lg:w-2/3 flex flex-col">

@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm",
-    "start": "node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "build": "tsc", 
+    "start": "npm run build && node dist/index.js",
+    "prod": "npm run build && npm run start",
+    "db:generate": "npx prisma generate --schema=../../packages/db/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "Hemanth",
@@ -16,10 +17,11 @@
     "@repo/db": "*",
     "@types/express": "^4.17.21",
     "cors": "^2.8.5",
-    "esbuild": "^0.20.2",
     "express": "^4.19.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17"
+    "@types/cors": "^2.8.17",
+    "typescript": "^4.5.4",
+    "@types/node": "^16.0.0"
   }
 }

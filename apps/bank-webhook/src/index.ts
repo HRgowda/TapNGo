@@ -118,5 +118,5 @@ app.post("/complete_onramp", depositLimiter, async (req, res) => {
   }
 });
 
-const PORT = 3003;
+const PORT = 3000;
 app.listen(PORT, () => console.log(`Webhook server running on port ${PORT}`));

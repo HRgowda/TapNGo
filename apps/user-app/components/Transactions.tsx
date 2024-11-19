@@ -45,7 +45,7 @@ export function Transactions({ transactionData, currentUserId }: TransactionProp
   const tableHeader = ["Id", "From", "To", "Amount", "Type", "Date"];
 
   return (
-    <div className="min-h-screen w-full bg-gray-900 text-white rounded-lg p-6 md:p-8 shadow-lg hover:shadow-lg hover:shadow-white/50">
+    <div className="border border-gray-500 min-h-screen w-full bg-gray-900 text-white rounded-lg p-6 md:p-8 shadow-lg hover:shadow-lg hover:shadow-white/50">
       <div className="text-2xl md:text-3xl font-extrabold mb-4 text-start">
         Recent P2P Transactions
       </div>

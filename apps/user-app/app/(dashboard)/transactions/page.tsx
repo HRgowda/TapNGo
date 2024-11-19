@@ -12,7 +12,7 @@ export default async function TransactionsPage() {
   const p2p = await fetchUserP2PTransactions(loggedUser);
 
   return (
-      <div className="p-3">
+      <div className=" lg:p-2">
         <Transactions transactionData={p2p} currentUserId={loggedUser} />
       </div>
   );

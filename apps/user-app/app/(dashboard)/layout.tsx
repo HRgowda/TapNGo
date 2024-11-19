@@ -30,7 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* Sidebar */}
             <aside
-                className={`fixed top-16 left-0 z-20 flex flex-col justify-between h-[calc(100vh-4rem)] w-80 bg-gray-900 shadow-lg p-4 transition-transform duration-300 lg:translate-x-0 ${
+                className={`fixed top-16 left-0 z-20 border-r flex flex-col justify-between h-[calc(100vh-4rem)] w-80 bg-gray-900 shadow-lg p-4 transition-transform duration-300 lg:translate-x-0 ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                 } lg:flex`}
             >

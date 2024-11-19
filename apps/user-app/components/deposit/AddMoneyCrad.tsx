@@ -43,19 +43,25 @@ export const AddMoney = ({ userid }: Props) => {
         provider,
         user_identifier: userid,
       });
-
+    
       if (response.status === 200) {
-        const token = response.data.token
+        const token = response.data.token;
         setAlertMessage({ message: response.data.message, status: "success" });
-        setTransactionToken(token)
-        setLoading(false)
+        setTransactionToken(token);
+        setLoading(false);
         setModalOpen(true);
         setTimeout(() => setAlertMessage(null), 3000);
       }
-    } catch (error) {
+    } catch (error: unknown) { // Error is now of type 'unknown'
       console.error("Error initiating deposit:");
-      setAlertMessage({ message: "Failed to initiate deposit. Try again later.", status: "failure" });
-      setTimeout(() => setAlertMessage(null), 3000);
+    
+      // Shortened error handling
+      const errorMessage = axios.isAxiosError(error) && error.response
+        ? error.response.data.message || "Failed to initiate deposit. Try again later."
+        : "Network error, please try again later.";
+    
+      setAlertMessage({ message: errorMessage, status: "failure" });
+      setTimeout(() => setAlertMessage(null), 4000);
     }
   };
 
