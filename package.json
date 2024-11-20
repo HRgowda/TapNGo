@@ -30,7 +30,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.7",
