@@ -10,9 +10,10 @@
     "start-user-app": "cd ./apps/user-app && npm run start"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "^0.0.0",
+    "@repo/typescript-config": "^0.0.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/express-rate-limit": "^5.1.3",
     "@types/lru-cache": "^7.10.9",
     "@types/next": "^8.0.7",
     "@types/nodemailer": "^6.4.16",
