@@ -13,8 +13,6 @@ const depositLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 3, // Limit each IP to 3 requests per windowMs
   message: "Too many requests, try again after 10 minutes",
-  standardHeaders: true, 
-  legacyHeaders: false, 
   handler: (req, res) => {
     res.status(429).json({
       success: false,
@@ -22,7 +20,6 @@ const depositLimiter = rateLimit({
     });
   },
 });
-
 
 app.use(cors({ origin: "*" }));
 
