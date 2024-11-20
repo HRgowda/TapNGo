@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@repo/db": "file:../../packages/db",
+    "@repo/typescript-config": "^0.0.0",
     "@types/express": "^4.17.21",
     "cors": "^2.8.5",
     "express": "^4.19.1"
