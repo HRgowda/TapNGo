@@ -4,7 +4,7 @@ import db from "@repo/db/client";
 import rateLimit from "express-rate-limit";
 
 // Bank-webhook server
-// Test 2.1
+
 const app = express();
 app.use(express.json());
 
@@ -19,6 +19,9 @@ const depositLimiter = rateLimit({
       message: "Too many requests, try again after 10 minutes.",
     });
   },
+  keyGenerator: (req, res) => {
+    return req.body.user_identifier || req.ip;
+  }
 });
 
 app.use(cors({ origin: "*" }));
