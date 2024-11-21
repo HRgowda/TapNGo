@@ -123,7 +123,7 @@ export function BankModal({
     setIsLoading(true);
 
     try {
-      const deposit = await axios.post(`http://localhost:3003/complete_onramp`, {
+      const deposit = await axios.post(`http://13.49.246.156:3000/complete_onramp`, {
         token: transactionToken,
         user_identifier: id,
         amount,

@@ -38,7 +38,7 @@ export const AddMoney = ({ userid }: Props) => {
     }
     setLoading(true)
     try {
-      const response = await axios.post("http://localhost:3003/create_onramp", {
+      const response = await axios.post(`${process.env.SERVER}/create_onramp`, {
         amount,
         provider,
         user_identifier: userid,
@@ -52,7 +52,7 @@ export const AddMoney = ({ userid }: Props) => {
         setModalOpen(true);
         setTimeout(() => setAlertMessage(null), 3000);
       }
-    } catch (error: unknown) { // Error is now of type 'unknown'
+    } catch (error: unknown) { 
       console.error("Error initiating deposit:");
     
       // Shortened error handling
@@ -66,7 +66,7 @@ export const AddMoney = ({ userid }: Props) => {
   };
 
   return (
-    <div className="rounded-xl transition-shadow duration-300 hover:shadow-lg hover:shadow-white/20">
+    <div className="rounded-xl transition-shadow duration-300 hover:shadow-lg hover:shadow-white/10">
       <Card title="Add Money to your Wallet">
         <div className="w-full">
           <TextInput label="Amount" placeholder="Enter amount" onChange={(value) => setAmount(Number(value))} />

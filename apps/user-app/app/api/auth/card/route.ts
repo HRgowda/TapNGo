@@ -1,6 +1,5 @@
 import db from "@repo/db/client";
 import { NextResponse } from "next/server";
-import Cors from "cors";
 
 export async function POST(req: Request) {
   
