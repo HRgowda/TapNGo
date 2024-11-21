@@ -7,7 +7,12 @@ module.exports = {
     "../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'scrollbar-thumb': '#gray-400',
+        'scrollbar-track': '#gray-800',
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 }

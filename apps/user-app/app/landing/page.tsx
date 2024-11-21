@@ -129,8 +129,8 @@ export default function LandingPage() {
             </div>
             <div className="flex justify-center space-x-4">
               <a href="#" className="hover:text-blue-400 transition duration-200">Docs</a>
-              <a href="#" className="hover:text-blue-400 transition duration-200">Source Code</a>
-              <a href="#" className="hover:text-blue-400 transition duration-200">Hemanth R</a>
+              <a href="https://github.com/HRgowda/TapNGo" className="hover:text-blue-400 transition duration-200">Source Code</a>
+              <a href="https://www.linkedin.com/in/hemanth-gowda-281a75258" className="hover:text-blue-400 transition duration-200">Hemanth R</a>
             </div>
           </div>
         </div>

@@ -38,7 +38,7 @@ export const AddMoney = ({ userid }: Props) => {
     }
     setLoading(true)
     try {
-      const response = await axios.post(`${process.env.SERVER}/create_onramp`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/create_onramp`, {
         amount,
         provider,
         user_identifier: userid,

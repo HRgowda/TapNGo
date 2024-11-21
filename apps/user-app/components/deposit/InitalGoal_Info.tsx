@@ -9,14 +9,14 @@ export function InitialGoalUi({userid}: {userid: number}) {
 
   return (
     <div id="vision-vault">
-      <div className="bg-gray-900 border border-gray-500 text-white rounded-xl shadow-lg p-6">
+      <div className="bg-gray-900 border border-gray-500 text-white rounded-xl p-6 transition-shadow duration-300 hover:shadow-lg hover:shadow-white/50">
         <div className="font-extrabold text-4xl text-start bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 mb-6">
           Fund the Future: Save with Purpose
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 shadow-inner">
           {/* Vision Vault Introduction */}
-          <div className="p-8 bg-gray-800 rounded-lg shadow-2xl">
+          <div className="p-8 bg-gray-800 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:shadow-white/30">
             <div className="font-extrabold text-2xl text-center mb-6 p-4 border-b border-blue-500">
               Introducing Vision Vault
             </div>
@@ -35,7 +35,7 @@ export function InitialGoalUi({userid}: {userid: number}) {
             </div>
           </div>
 
-          <div className="p-8 bg-gray-800 rounded-lg shadow-2xl">
+          <div className="p-8 bg-gray-800 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:shadow-white/30">
             <div className="font-extrabold text-2xl text-center mb-6 p-4 border-b border-blue-500">
               Save Now, Thrive Later! 🌱
             </div>

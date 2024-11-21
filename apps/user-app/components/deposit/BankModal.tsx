@@ -123,7 +123,7 @@ export function BankModal({
     setIsLoading(true);
 
     try {
-      const deposit = await axios.post(`http://13.49.246.156:3000/complete_onramp`, {
+      const deposit = await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/complete_onramp`, {
         token: transactionToken,
         user_identifier: id,
         amount,
@@ -135,6 +135,7 @@ export function BankModal({
           message: deposit.data.message,
           status: "success",
         });
+        setIsLoading(false)
         setTimeout(() => {
           setAlertMessage(null);
           setPin("");
@@ -146,7 +147,6 @@ export function BankModal({
       const errorMessage = axios.isAxiosError(error) && error.response && error.response.data.message
           ? error.response.data.message
           : "Failed to initiate deposit. Please try again later.";
-
       setAlertMessage({
         message: errorMessage,
         status: "failure",
@@ -175,7 +175,7 @@ export function BankModal({
 
       if (otpResponse.status === 200) {
         // If PIN is not required, pass it as undefined
-        const onRampResponse = await axios.post(`http://localhost:3003/complete_onramp`, {
+        const onRampResponse = await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/complete_onramp`, {
           token: transactionToken,
           user_identifier: id,
           amount,
@@ -187,6 +187,7 @@ export function BankModal({
             message: onRampResponse.data.message,
             status: "success",
           });
+          setIsLoading(false)
 
           setTimeout(() => {
             setAlertMessage(null);
@@ -200,6 +201,7 @@ export function BankModal({
             message: "Transaction failed: " + onRampResponse.data.message,
             status: "failure",
           });
+          setIsLoading(false)
           setTimeout(() => {
             setAlertMessage(null);
             setEmail("");
@@ -358,7 +360,7 @@ export function BankModal({
               />
             </div>
             <div className="mt-1 flex flex-col items-center col-span-1">
-              <Button onClick={handleDepositwithPin}>Deposit -</Button>
+              <Button onClick={handleDepositwithPin}>{isLoading ? "Processing..." : "Deposit"}</Button>
             </div>
           </div>
         </div>
