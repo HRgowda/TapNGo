@@ -8,7 +8,7 @@ import rateLimit from "express-rate-limit";
 const app = express();
 app.use(express.json());
 
-// Custom Rate Limit Handler
+// Custom Rate Limit Handler ( keygenerator for ratelimiting to individual user )
 const depositLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 3, // Limit each IP to 3 requests per windowMs
