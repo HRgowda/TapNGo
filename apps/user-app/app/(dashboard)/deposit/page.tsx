@@ -27,6 +27,7 @@ export default async function DepositPage() {
   const userdata = await getUserDataWithDepositGoals(userId);
 
   return (
+    
     <div className="p-2">
       
       <div className="flex flex-col lg:flex-row justify-between gap-4">

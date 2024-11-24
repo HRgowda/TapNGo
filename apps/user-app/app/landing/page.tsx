@@ -124,13 +124,12 @@ export default function LandingPage() {
           <p>&copy; 2024 TapNGo. All rights reserved.</p>
           <div className="mt-4 grid grid-cols-2 gap-4 justify-center">
             <div className="flex justify-center space-x-4">
-              <a href="#" className="hover:text-blue-400 transition duration-200">Privacy Policy</a>
-              <a href="#" className="hover:text-blue-400 transition duration-200">Terms of Service</a>
+              <a href="/privacy-policy" className="hover:text-blue-400 transition duration-200">Privacy Policy</a>
+              <a href="/terms-of-service" className="hover:text-blue-400 transition duration-200">Terms of Service</a>
             </div>
             <div className="flex justify-center space-x-4">
-              <a href="#" className="hover:text-blue-400 transition duration-200">Docs</a>
               <a href="https://github.com/HRgowda/TapNGo" className="hover:text-blue-400 transition duration-200">Source Code</a>
-              <a href="https://www.linkedin.com/in/hemanth-gowda-281a75258" className="hover:text-blue-400 transition duration-200">Hemanth R</a>
+              <a href="https://www.linkedin.com/in/hemanth-r-281a75258/" className="hover:text-blue-400 transition duration-200">Hemanth R</a>
             </div>
           </div>
         </div>
