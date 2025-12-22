@@ -50,11 +50,11 @@ export async function getUserWithCard(userId: number): Promise<UserWithCard | nu
     },
   });
 
-  if (!userData || !userData.Card[0]) return null;
+  if (!userData) return null;
 
   return {
     fullName: `${userData.firstName} ${userData.lastName || ''}`.trim(),
-    card: userData.Card[0], // Assuming we only need the first card
+    card: userData.Card && userData.Card.length > 0 ? userData.Card[0] ?? null : null,
   };
 }
 

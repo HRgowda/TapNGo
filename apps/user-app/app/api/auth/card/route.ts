@@ -1,5 +1,7 @@
 import db from "@repo/db/client";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "app/lib/auth";
 
 export async function POST(req: Request) {
   
@@ -15,41 +17,64 @@ export async function POST(req: Request) {
       );
     }
 
-    const nameParts = name.split(" ");
-    if (nameParts.length < 1) {
+    // Get the logged-in user from session
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json(
         {
-          message: "Invalid name format. First name is required.",
+          message: "You must be logged in to create a card.",
         },
-        { status: 400 }
+        { status: 401 }
       );
     }
 
-    const name1 = nameParts[0];
+    const userId = Number(session.user.id);
 
-    const user = await db.user.findFirst({
-      where: { firstName: name1 },
+    // Check if user exists
+    const user = await db.user.findUnique({
+      where: { id: userId },
       select: { id: true },
     });
 
     if (!user) {
       return NextResponse.json(
         {
-          message: `User with first name '${name1}' not found.`,
+          message: "User not found.",
         },
         { status: 404 }
       );
     }
 
-    const newCard = await db.card.create({
-      data: {
-        cardNumber,
-        validDate,
-        expiryDate,
-        cvv,
-        userid: user.id,
-      },
+    // Check if user already has a card, if so, update it instead of creating a new one
+    const existingCard = await db.card.findFirst({
+      where: { userid: userId },
     });
+
+    let newCard;
+    if (existingCard) {
+      // Update existing card
+      newCard = await db.card.update({
+        where: { id: existingCard.id },
+        data: {
+          cardNumber,
+          validDate,
+          expiryDate,
+          cvv,
+        },
+      });
+    } else {
+      // Create new card
+      newCard = await db.card.create({
+        data: {
+          cardNumber,
+          validDate,
+          expiryDate,
+          cvv,
+          userid: userId,
+        },
+      });
+    }
 
     return NextResponse.json(
       {
