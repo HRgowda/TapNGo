@@ -13,12 +13,34 @@ interface User {
   firstName: string;
 }
 
-export async function P2PTransfer(to: number, amount: number) {
+export async function P2PTransfer(to: number, amount: number, pin: string) {
   const from = await getLoggedUser();
 
   if (!from) {
     return {
       message: "Error while sending"
+    };
+  }
+
+  // Validate PIN
+  const fromUser = await db.user.findUnique({
+    where: {
+      id: Number(from)
+    },
+    select: {
+      pin: true
+    }
+  });
+
+  if (!fromUser) {
+    return {
+      message: "Error while sending"
+    };
+  }
+
+  if (fromUser.pin !== pin) {
+    return {
+      message: "Invalid PIN"
     };
   }
 
@@ -73,6 +95,10 @@ export async function P2PTransfer(to: number, amount: number) {
 
     console.log("Transfer completed successfully");
   });
+
+  return {
+    message: "Transfer successful"
+  };
 }
 
 

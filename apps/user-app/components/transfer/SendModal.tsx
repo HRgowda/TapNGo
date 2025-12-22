@@ -14,6 +14,7 @@ interface SendModalProps {
 
 export function SendModal({ isOpen, onClose, recieverId, recieverName, children }: SendModalProps) {
   const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [pin, setPin] = useState("");
   const [alertMessage, setAlertMessage] = useState<{
     message: string;
     status: "success" | "failure";
@@ -22,6 +23,15 @@ export function SendModal({ isOpen, onClose, recieverId, recieverName, children 
 
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setAlertMessage(null);
+      setPin("");
+      setAmount(undefined);
+      onClose();
+    }
   };
 
   async function handleSendClick() {
@@ -36,26 +46,45 @@ export function SendModal({ isOpen, onClose, recieverId, recieverName, children 
       return;
     }
 
+    if (!pin) {
+      setAlertMessage({ message: "Please enter your tapNgo PIN", status: "failure" });
+      setTimeout(() => {
+        setAlertMessage(null);
+        setPin("");
+      }, 2000);
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await P2PTransfer(recieverId, Number(amount));
+      const response = await P2PTransfer(recieverId, Number(amount), pin);
       if (response?.message === "User not found") {
         setAlertMessage({ message: "User not found", status: "failure" });
         setTimeout(() => {
           setAlertMessage(null);
+          setPin("");
           onClose();
+        }, 2000);
+      } else if (response?.message === "Invalid PIN") {
+        setAlertMessage({ message: "Invalid PIN. Please try again", status: "failure" });
+        setTimeout(() => {
+          setAlertMessage(null);
+          setPin("");
         }, 2000);
       } else if (response?.message === "Error while sending") {
         setAlertMessage({ message: "Transfer failed. Please try again", status: "failure" });
         setTimeout(() => {
           setAlertMessage(null);
+          setPin("");
           onClose();
-        });
+        }, 2000);
       } else {
         setAlertMessage({ message: "Transfer successful!", status: "success" });
         setTimeout(() => {
           setAlertMessage(null);
+          setPin("");
+          setAmount(undefined);
           onClose();
         }, 1000);
       }
@@ -66,6 +95,7 @@ export function SendModal({ isOpen, onClose, recieverId, recieverName, children 
       });
       setTimeout(() => {
         setAlertMessage(null);
+        setPin("");
         onClose();
       }, 2000);
     }
@@ -76,7 +106,7 @@ export function SendModal({ isOpen, onClose, recieverId, recieverName, children 
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
-      onClick={onClose}
+      onClick={handleOverlayClick}
     >
       <div
         className="relative p-4 bg-gray-900 rounded-lg border-2 border-blue-500 w-auto max-w-[30rem] md:w-[30rem] sm:w-[24rem] sm:px-6 sm:py-8"
@@ -108,17 +138,34 @@ export function SendModal({ isOpen, onClose, recieverId, recieverName, children 
 
           {/* Right: Input box with label and Send button */}
           <div className="flex flex-col items-center space-y-4 w-full sm:w-auto px-4 sm:px-0">
-            {/* Input label and box */}
+            {/* Amount Input */}
             <div className="flex flex-col w-full sm:w-auto">
               <label htmlFor="amount" className="text-white text-sm sm:text-base mb-1 sm:mb-2">
                 Amount
               </label>
               <input
                 type="number"
+                id="amount"
                 className="w-full sm:w-auto text-white text-md font-semibold border-b bg-gray-800 p-2 rounded-lg"
                 placeholder="100"
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
+              />
+            </div>
+
+            {/* PIN Input */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label htmlFor="pin" className="text-white text-sm sm:text-base mb-1 sm:mb-2">
+                Enter your tapNgo PIN
+              </label>
+              <input
+                type="password"
+                id="pin"
+                maxLength={4}
+                className="w-full sm:w-auto text-white text-md font-semibold border-b bg-gray-800 p-2 rounded-lg"
+                placeholder="Enter PIN"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
               />
             </div>
 
