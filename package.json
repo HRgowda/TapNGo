@@ -39,7 +39,7 @@
     "express-rate-limit": "^7.4.1",
     "html5-qrcode": "^2.3.8",
     "lottie-react": "^2.4.0",
-    "next": "^15.0.3",
+    "next": "15.0.7",
     "nodemailer": "^6.9.16",
     "qr-scanner": "^1.4.2",
     "react": "^18.3.1",
